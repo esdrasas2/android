@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Leitor de Notas</string>
+
+    <string name="prompt_email">Login</string>
+    <string name="prompt_password">Senha </string>
+    <string name="action_sign_in">Entrar</string>
+    <string name="action_sign_in_short">Cadastrar</string>
+    <string name="error_invalid_email">Email inválido</string>
+    <string name="error_invalid_password">Senha muito curta</string>
+    <string name="error_incorrect_password">Senha ou Email está incorreto</string>
+    <string name="error_field_required">Campo obrigatório</string>
+    <string name="permission_rationale">"As permissões de contatos são necessárias ."
+    </string>
+
+    <string name="navigation_drawer_open">Abrir</string>
+    <string name="navigation_drawer_close">Fechar</string>
+
+    <string name="action_settings">Configurações</string>
+</resources>
