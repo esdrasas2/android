@@ -331,13 +331,6 @@ public class AutoLoginActivity extends AppCompatActivity implements LoaderCallba
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
 
                 HashMap<String, String> hash = new HashMap<String, String>();
 
