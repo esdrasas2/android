@@ -9,8 +9,9 @@ package com.crisnello.notereader.config;
 //        public final static String WS_URL_LOGIN = "http://172.17.6.56:8080/bancodenotas/pages/home/api/login.jsf";
 //        public final static String WS_URL_NOTA = "http://172.17.6.56:8080/bancodenotas/pages/nota/api/notaAdd.jsf";
 
-            public final static String WS_URL_LOGIN = "http://177.71.246.197/bancodenotas/pages/home/api/login.jsf";
-            public final static String WS_URL_NOTA = "http://177.71.246.197/bancodenotas/pages/nota/api/notaAdd.jsf";
+        public final static String WS_URL_LOGIN = "http://177.71.246.197/bancodenotas/pages/home/api/login.jsf";
+        public final static String WS_URL_NOTA = "http://177.71.246.197/bancodenotas/pages/nota/api/notaAdd.jsf";
+        public final static String WS_URL_NOTAS = "http://177.71.246.197/bancodenotas/pages/nota/api/notas.jsf"; //SO PASSA o id_usuario
 
 
         //public final static String WS_FILE_PATH="system/file/";

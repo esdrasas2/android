@@ -90,6 +90,10 @@ public class Nota implements Serializable {
         this.idCliente = idCliente;
     }
 
+    @Override
+    public String toString() {
+        return getId()+" - "+getCnpj();
+    }
 }
 
 

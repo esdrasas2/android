@@ -114,6 +114,7 @@ public class Internet
             StringBuilder params = new StringBuilder("");
 
             for (Entry<String, String> item : map.entrySet()) {
+                Log.i("Internet.postHttp",item.getKey()+"="+item.getValue());
                 params.append("&" + item.getKey() + "=");
                 if (item.getValue() != null)
                     params.append(URLEncoder.encode(item.getValue(), "UTF-8"));
@@ -124,13 +125,11 @@ public class Internet
             con.setDoOutput(true);
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(con.getOutputStream());
             outputStreamWriter.write(params.toString());
-            Log.e("Params.tostring", params.toString());
+
             outputStreamWriter.flush();
 
             int responseCode = con.getResponseCode();
-            //Log.d("LP","\nSending 'POST' request to URL : " + url);
-            Log.e("LP", "Post parameters : " + params);
-            Log.e("LP", "Response POST: " + responseCode);
+            Log.e("Internet.postHttp", "Response Code: " + responseCode);
 
             //Retorna o retultado Html em String
             bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -142,10 +141,11 @@ public class Internet
             while ((line = bufferedReader.readLine()) != null)
             {
                 stringBuffer.append(line + NL);
-                Log.e("POST HTTP: ", stringBuffer.toString());
+
             }
             bufferedReader.close();
             //Log.d("Ws", "Leitura de buffer finalizada");
+            Log.e("POST HTTP RETORNO", stringBuffer.toString());
 
             result = stringBuffer.toString();
             return result;
