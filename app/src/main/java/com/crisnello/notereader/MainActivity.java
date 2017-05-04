@@ -30,6 +30,7 @@ import com.crisnello.notereader.entitie.Nota;
 import com.crisnello.notereader.entitie.Usuario;
 import com.crisnello.notereader.util.AdapterListView;
 import com.crisnello.notereader.util.Internet;
+import com.crisnello.notereader.util.PreferencesUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -218,7 +219,8 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+           //super.onBackPressed();
+           sair();
         }
     }
 
@@ -240,6 +242,13 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    public void sair(){
+        Intent intent = new Intent(getApplicationContext(), AutoLoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("EXIT", true);
+        startActivity(intent);
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -247,10 +256,11 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_sair) {
-            Intent intent = new Intent(getApplicationContext(), AutoLoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtra("EXIT", true);
-            startActivity(intent);
+            //finish();
+            PreferencesUtil.removePref(PreferencesUtil.NOME, getApplicationContext());
+            PreferencesUtil.removePref(PreferencesUtil.EMAIL, getApplicationContext());
+            PreferencesUtil.removePref(PreferencesUtil.ID, getApplicationContext());
+            sair();
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {

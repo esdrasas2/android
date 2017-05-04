@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.crisnello.notereader.config.Config;
 import com.crisnello.notereader.entitie.Usuario;
 import com.crisnello.notereader.util.Internet;
+import com.crisnello.notereader.util.PreferencesUtil;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -82,16 +83,16 @@ public class AutoLoginActivity extends AppCompatActivity implements LoaderCallba
         //populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
-//        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            @Override
-//            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-//                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-//                    attemptLogin(); //ISSO NAO TA FUNFANDO, VERIFICAR
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
+        //        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        //            @Override
+        //            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+        //                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+        //                    attemptLogin(); //ISSO NAO TA FUNFANDO, VERIFICAR
+        //                    return true;
+        //                }
+        //                return false;
+        //            }
+        //        });
 
         Button mSignInButton = (Button) findViewById(R.id.sign_in_button);
         mSignInButton.setOnClickListener(new OnClickListener() {
@@ -103,6 +104,25 @@ public class AutoLoginActivity extends AppCompatActivity implements LoaderCallba
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        if (getIntent().getBooleanExtra("EXIT", false)) {
+            finish();
+        }else {
+            long pId = PreferencesUtil.getPrefLong(PreferencesUtil.ID, getApplicationContext());
+            String pNome = PreferencesUtil.getPref(PreferencesUtil.NOME, getApplicationContext());
+            String pEmail = PreferencesUtil.getPref(PreferencesUtil.EMAIL, getApplicationContext());
+
+            Log.e("PreferencesUtil", "id :" + pId + " nome :" + pNome + " email :" + pEmail);
+
+            if (pId > 0) {
+                Usuario user = new Usuario();
+                user.setId(pId);
+                user.setNome(pNome);
+                user.setEmail(pEmail);
+                Intent intent = new Intent(AutoLoginActivity.this, MainActivity.class);
+                intent.putExtra("USER", user);
+                startActivityForResult(intent, ACTIVITY_REQUEST_CODE);
+            }
+        }
     }
 
 //    private void populateAutoComplete() {
@@ -193,8 +213,7 @@ public class AutoLoginActivity extends AppCompatActivity implements LoaderCallba
             // form field with an error.
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
+
             showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
@@ -337,9 +356,12 @@ public class AutoLoginActivity extends AppCompatActivity implements LoaderCallba
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+        protected void onPreExecute() {
 
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
 
                 HashMap<String, String> hash = new HashMap<String, String>();
 
@@ -347,21 +369,12 @@ public class AutoLoginActivity extends AppCompatActivity implements LoaderCallba
                 hash.put("login_password",mPassword);
 
                 String respJson = Internet.postHttp(Config.WS_URL_LOGIN,hash);
-
                 user = new Gson().fromJson(respJson, Usuario.class);
-
                // Log.i("Usuario",user.toString());
-
                 if(user.getId() == -1 || user.getIdCliente() == -1){
                     return false;
                 }
-
                 return  true;
-
-
-
-//            }
-
         }
 
 
@@ -373,10 +386,15 @@ public class AutoLoginActivity extends AppCompatActivity implements LoaderCallba
 
             if (success) {
                 showToast("Seja bem vindo "+user.getNome());
+
+                PreferencesUtil.putPrefLong(PreferencesUtil.ID,user.getId(), getApplicationContext());
+                PreferencesUtil.putPref(PreferencesUtil.NOME, user.getNome(),getApplicationContext());
+                PreferencesUtil.putPref(PreferencesUtil.EMAIL,user.getEmail(),getApplicationContext());
+
                 Intent intent = new Intent(AutoLoginActivity.this, MainActivity.class);
                 intent.putExtra("USER",user);
                 startActivityForResult(intent,ACTIVITY_REQUEST_CODE);
-                //finish();
+
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
