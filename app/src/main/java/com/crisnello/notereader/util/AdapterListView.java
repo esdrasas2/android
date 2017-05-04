@@ -1,4 +1,4 @@
-package com.crisnello.notereader;
+package com.crisnello.notereader.util;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,14 +7,17 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.crisnello.notereader.R;
+import com.crisnello.notereader.entitie.Nota;
+
 import java.util.ArrayList;
 
 public class AdapterListView extends BaseAdapter
 {
     private LayoutInflater mInflater;
-    private ArrayList<ItemListView> itens;
+    private ArrayList<Nota> itens;
 
-    public AdapterListView(Context context, ArrayList<ItemListView> itens)
+    public AdapterListView(Context context, ArrayList<Nota> itens)
     {
         //Itens que preencheram o listview
         this.itens = itens;
@@ -38,7 +41,7 @@ public class AdapterListView extends BaseAdapter
      * @param position
      * @return
      */
-    public ItemListView getItem(int position)
+    public Nota getItem(int position)
     {
         return itens.get(position);
     }
@@ -57,13 +60,13 @@ public class AdapterListView extends BaseAdapter
     public View getView(int position, View view, ViewGroup parent)
     {
         //Pega o item de acordo com a posção.
-        ItemListView item = itens.get(position);
+        Nota item = itens.get(position);
         //infla o layout para podermos preencher os dados
-        view = mInflater.inflate(R.layout.item_listview, null);
+        view = mInflater.inflate(R.layout.nota_listview, null);
 
         //atravez do layout pego pelo LayoutInflater, pegamos cada id relacionado
         //ao item e definimos as informações.
-        ((TextView) view.findViewById(R.id.text)).setText(item.getTexto());
+        ((TextView) view.findViewById(R.id.text)).setText(item.toString());
 
 
         return view;

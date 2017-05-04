@@ -32,16 +32,6 @@ public class Internet
         BufferedReader bufferedReader = null;
         Log.d("PostHttpEntity",url);
 
-//        HttpClient httpclient = new DefaultHttpClient();
-//        httpclient.getParams().setParameter(CoreProtocolPNames.USER_AGENT, "android");
-//        HttpConnectionParams.setConnectionTimeout(httpclient.getParams(), 0);
-//        HttpConnectionParams.setSoTimeout(httpclient.getParams(), 0);
-//        ConnManagerParams.setTimeout(httpclient.getParams(), 0);
-
-        //url="http://192.168.25.22/post.php";
-
-//        HttpPost httppost = new HttpPost(url);
-//        httppost.setEntity(entity);
 
         try{
             URL obj = new URL(url);
@@ -94,9 +84,6 @@ public class Internet
         Log.e("URL: ", url);
         BufferedReader bufferedReader = null;
         HttpURLConnection con = null;
-//		    HttpClient httpclient = new DefaultHttpClient();
-//		    httpclient.getParams().setParameter(CoreProtocolPNames.USER_AGENT, "android");
-//		    HttpPost httppost = new HttpPost(url);
 
         HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
 
@@ -114,7 +101,7 @@ public class Internet
             StringBuilder params = new StringBuilder("");
 
             for (Entry<String, String> item : map.entrySet()) {
-                Log.i("Internet.postHttp",item.getKey()+"="+item.getValue());
+                //Log.i("Internet.postHttp",item.getKey()+"="+item.getValue());
                 params.append("&" + item.getKey() + "=");
                 if (item.getValue() != null)
                     params.append(URLEncoder.encode(item.getValue(), "UTF-8"));
@@ -137,15 +124,11 @@ public class Internet
             String line = "";
             String NL = System.getProperty("line.separator");
 
-            //Log.d("Ws","Iniciando leitura de buffer.");
-            while ((line = bufferedReader.readLine()) != null)
-            {
+            while ((line = bufferedReader.readLine()) != null){
                 stringBuffer.append(line + NL);
-
             }
             bufferedReader.close();
-            //Log.d("Ws", "Leitura de buffer finalizada");
-            Log.e("POST HTTP RETORNO", stringBuffer.toString());
+            //Log.e("POST HTTP RETORNO", stringBuffer.toString());
 
             result = stringBuffer.toString();
             return result;

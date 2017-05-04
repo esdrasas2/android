@@ -1,6 +1,7 @@
 package com.crisnello.notereader.entitie;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -92,7 +93,8 @@ public class Nota implements Serializable {
 
     @Override
     public String toString() {
-        return getId()+" - "+getCnpj();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        return getId()+" - "+getCnpj()+" - "+getValor()+" - "+sdf.format(getDataEmissao());
     }
 }
 

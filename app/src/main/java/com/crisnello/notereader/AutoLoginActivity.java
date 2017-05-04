@@ -339,12 +339,9 @@ public class AutoLoginActivity extends AppCompatActivity implements LoaderCallba
 
                 String respJson = Internet.postHttp(Config.WS_URL_LOGIN,hash);
 
-                Log.i("Result .postHttp",respJson);
-
-
                 user = new Gson().fromJson(respJson, Usuario.class);
 
-                Log.i("Usuario",user.toString());
+               // Log.i("Usuario",user.toString());
 
                 if(user.getId() == 0 && user.getIdCliente() == -1){
                     return false;

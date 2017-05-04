@@ -3,6 +3,7 @@ package com.crisnello.notereader;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,12 +16,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.crisnello.notereader.config.Config;
 import com.crisnello.notereader.entitie.Nota;
 import com.crisnello.notereader.entitie.Usuario;
+import com.crisnello.notereader.util.AdapterListView;
 import com.crisnello.notereader.util.Internet;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity
 
     private ListView listaDeNotas;
     private AdapterListView adapterListView;
-    private ArrayList<ItemListView> itens;
+    private ArrayList<Nota> itens;
     //----------------
 
     private String format;
@@ -51,8 +52,10 @@ public class MainActivity extends AppCompatActivity
 
     private Usuario user;
     static final String ACTION_SCAN = "com.google.zxing.client.android.SCAN";
+    public static final int ACTIVITY_REQUEST_QR_CODE = 0;
+    public static final int ACTIVITY_REQUEST_CODE = 1;
 
-    private List<Nota> notas = new ArrayList<Nota>();
+    //private List<Nota> notas = new ArrayList<Nota>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +68,6 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
                 scanQR(view);
             }
         });
@@ -82,80 +83,73 @@ public class MainActivity extends AppCompatActivity
 
         user = (Usuario) getIntent().getSerializableExtra("USER");
 
-
         View navigationViewHeader = navigationView.getHeaderView(0);
 
         TextView tv_login = (TextView) navigationViewHeader.findViewById(R.id.tv_login);
         tv_login.setText(user.getEmail());
 
-        /*TEMP HARD CODE*/
-        Nota nota = new Nota();
-        nota.setId(0);
-        nota.setCnpj("00.000.000/0001-00");
-
-        notas.add(nota);
-
         listaDeNotas = (ListView) findViewById(R.id.lista);
         listaDeNotas.setOnItemClickListener(this);
 
+        updateNotas();
+    }
+
+    public void updateNotas(){
         new Thread(new Runnable() {
             @Override
             public void run() {
-                HashMap<String, String> hash = new HashMap<String, String>();
-                hash.put("id_usuario",String.valueOf(user.getId()));
-                String respJson = Internet.postHttp(Config.WS_URL_NOTAS,hash);
-                //Log.i("Result .postHttp",respJson);
-                Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
-                Nota[] notaArray = gson.fromJson(respJson, Nota[].class);
-                notas = new ArrayList<Nota>(Arrays.asList(notaArray));
-//                for(int x=0;x<notas.size();x++){
-//                    Nota nota = notas.get(x);
-//                    Log.e("Notas",nota.toString());
-//                }
-                createListView();
+                try {
+                    HashMap<String, String> hash = new HashMap<String, String>();
+                    hash.put("id_usuario", String.valueOf(user.getId()));
+                    String respJson = Internet.postHttp(Config.WS_URL_NOTAS, hash);
+                    //Log.i("Result .postHttp",respJson);
+                    Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
+                    Nota[] notaArray = gson.fromJson(respJson, Nota[].class);
+                    itens = new ArrayList<Nota>(Arrays.asList(notaArray));
 
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            createListView();
+                        }
+                    });
+                }catch(Exception e){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "Não foi possível carregar as notas cadastradas! ", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
             }
         }).start();
-
-
-
-
-    }
-
-    public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
-    {
-        //Pega o item que foi selecionado.
-        ItemListView item = adapterListView.getItem(arg2);
-        //Demostração
-        Toast.makeText(this, "Você Clicou em: " + item.getTexto(), Toast.LENGTH_LONG).show();
     }
 
     private void createListView()
     {
-        //Criamos nossa lista que preenchera o ListView
-        itens = new ArrayList<ItemListView>();
-        Log.e("createListView","Vou carregar as notas TAMANHO:"+notas.size());
-        for(int i=0;i<notas.size();i++){
-            Nota nota = notas.get(i);
-            itens.add(new ItemListView(nota.toString()));
-        }
-
-        //Cria o adapter
         adapterListView = new AdapterListView(this, itens);
-
-        //Define o Adapter
         listaDeNotas.setAdapter(adapterListView);
-        //Cor quando a lista é selecionada para ralagem.
         listaDeNotas.setCacheColorHint(Color.TRANSPARENT);
     }
+
+
+    public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
+    {
+        Nota item = adapterListView.getItem(arg2);
+
+        Intent myWebLink = new Intent(android.content.Intent.ACTION_VIEW);
+        myWebLink.setData(Uri.parse(item.getNumeroFiscalCoo()));
+        startActivityForResult(myWebLink,ACTIVITY_REQUEST_CODE);
+    }
+
 
     public void scanQR(View v) {
         try {
             Intent intent = new Intent(ACTION_SCAN);
             intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
-            startActivityForResult(intent, 0);
+            startActivityForResult(intent, ACTIVITY_REQUEST_QR_CODE);
         } catch (ActivityNotFoundException anfe) {
-            showDialog(MainActivity.this, "Scanner não Encontrado", "Download o scanner de QRCODE do google?", "Sim", "Não").show();
+            showDialog(MainActivity.this, "Scanner não Encontrado", "Baixar o scanner de QRCODE do google?", "Sim", "Não").show();
         }
     }
 
@@ -182,7 +176,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == 0) {
+        if (requestCode == ACTIVITY_REQUEST_QR_CODE) {
             if (resultCode == RESULT_OK) {
                 contents = intent.getStringExtra("SCAN_RESULT");
                 format = intent.getStringExtra("SCAN_RESULT_FORMAT");
@@ -201,11 +195,19 @@ public class MainActivity extends AppCompatActivity
                         //Log.i("Result .postHttp",respJson);
 
                         Nota notaInserida = new Gson().fromJson(respJson,Nota.class);
-                        notas.add(notaInserida);
+                        itens.add(notaInserida);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ((BaseAdapter) listaDeNotas.getAdapter()).notifyDataSetChanged();
+                            }
+                        });
                     }
                 }).start();
 
             }
+        }else if(requestCode == ACTIVITY_REQUEST_CODE){
+            updateNotas();
         }
     }
 
@@ -249,8 +251,8 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
+        if (id == R.id.nav_sair) {
+            finish();
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
