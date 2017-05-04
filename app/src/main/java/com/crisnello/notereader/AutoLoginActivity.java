@@ -308,10 +308,19 @@ public class AutoLoginActivity extends AppCompatActivity implements LoaderCallba
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //Log.e("Login.onActivityResult","requestCode :"+requestCode+" resultCode : "+resultCode);
         if(requestCode == ACTIVITY_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 finish();
             }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (getIntent().getBooleanExtra("EXIT", false)) {
+            finish();
         }
     }
 
@@ -343,7 +352,7 @@ public class AutoLoginActivity extends AppCompatActivity implements LoaderCallba
 
                // Log.i("Usuario",user.toString());
 
-                if(user.getId() == 0 && user.getIdCliente() == -1){
+                if(user.getId() == -1 || user.getIdCliente() == -1){
                     return false;
                 }
 
@@ -363,7 +372,7 @@ public class AutoLoginActivity extends AppCompatActivity implements LoaderCallba
             showProgress(false);
 
             if (success) {
-                showToast("Login realizado com sucesso!");
+                showToast("Seja bem vindo "+user.getNome());
                 Intent intent = new Intent(AutoLoginActivity.this, MainActivity.class);
                 intent.putExtra("USER",user);
                 startActivityForResult(intent,ACTIVITY_REQUEST_CODE);

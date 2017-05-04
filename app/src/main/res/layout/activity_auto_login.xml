@@ -103,7 +103,7 @@
                         android:background="@drawable/button_facebook_transparent"
                         android:inputType="textPassword"
                         android:maxLines="1"
-                        android:text="123456"
+                        android:text=""
                         android:paddingBottom="16dp"
                         android:paddingLeft="6dp"
                         android:paddingRight="6dp"
