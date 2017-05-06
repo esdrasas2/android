@@ -194,15 +194,18 @@ public class MainActivity extends AppCompatActivity
                         hash.put("str_qr_code",contents);
                         String respJson = Internet.postHttp(Config.WS_URL_NOTA,hash);
                         //Log.i("Result .postHttp",respJson);
-
-                        Nota notaInserida = new Gson().fromJson(respJson,Nota.class);
-                        itens.add(notaInserida);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ((BaseAdapter) listaDeNotas.getAdapter()).notifyDataSetChanged();
-                            }
-                        });
+                        try {
+                            Nota notaInserida = new Gson().fromJson(respJson, Nota.class);
+                            itens.add(notaInserida);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ((BaseAdapter) listaDeNotas.getAdapter()).notifyDataSetChanged();
+                                }
+                            });
+                        }catch(Exception e){
+                            updateNotas();
+                        }
                     }
                 }).start();
 
