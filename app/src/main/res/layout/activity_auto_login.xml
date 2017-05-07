@@ -123,11 +123,11 @@
                 android:layout_marginRight="30dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/button"
+                android:textColor="@color/colorPrimary"
+                android:textColorLink="@color/colorPrimary"
                 android:padding="16dp"
                 android:text="Entrar"
                 android:textAllCaps="false"
-                android:textColor="@color/colorPrimary"
-                android:textColorLink="@color/colorPrimary"
                 android:textSize="16dp" />
 
         </LinearLayout>

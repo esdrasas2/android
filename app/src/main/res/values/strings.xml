@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Leitor de Notas</string>
+    <string name="app_name">Note Reader</string>
 
     <string name="prompt_email">Login</string>
     <string name="prompt_password">Senha </string>

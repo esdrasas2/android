@@ -274,9 +274,9 @@ public class MainActivity extends AppCompatActivity
 
             Intent compartilha = new Intent(Intent.ACTION_SEND);
             compartilha.setType("text/plain");
-            compartilha.putExtra(Intent.EXTRA_SUBJECT, "Utilize o Leitor de Notas");
-            compartilha.putExtra(Intent.EXTRA_TEXT, "bancodenotas.sytes.net");
-            startActivity(Intent.createChooser(compartilha, "Compartilhando"));
+            compartilha.putExtra(Intent.EXTRA_SUBJECT, "Install Note Reader");
+            compartilha.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=com.crisnello.notereader");
+            startActivity(Intent.createChooser(compartilha, "install Note Reader"));
 
         } else if (id == R.id.nav_send) {
 

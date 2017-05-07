@@ -16,12 +16,13 @@
         <TextView
             android:id="@+id/text"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="75dp"
             android:layout_marginLeft="5sp"
-            android:background="@drawable/button_facebook_transparent"
+            android:background="@drawable/button"
+            android:textColor="@color/colorPrimary"
+            android:textColorLink="@color/colorPrimary"
             android:gravity="center_vertical"
             android:padding="6dp"
-            android:textColor="#B0C4DE"
             android:textSize="16sp" />
     </LinearLayout>
 </LinearLayout>

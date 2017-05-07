@@ -97,7 +97,7 @@ public class Nota implements Serializable {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         String resultadoDouble = String.format("%.2f", getValor());
         //return getId()+" - "+getCnpj()+" R$ "+resultadoDouble+" - "+sdf.format(getDataEmissao());
-        return getCnpj()+" R$ "+resultadoDouble+" - "+sdf.format(getDataEmissao());
+        return "CNPJ : "+getCnpj()+"       "+sdf.format(getDataEmissao())+"\n\nR$ "+resultadoDouble;
     }
 }
 
