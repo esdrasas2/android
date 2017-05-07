@@ -29,6 +29,8 @@ import com.crisnello.notereader.config.Config;
 import com.crisnello.notereader.entitie.Nota;
 import com.crisnello.notereader.entitie.Usuario;
 import com.crisnello.notereader.util.AdapterListView;
+import com.crisnello.notereader.util.ConexaoInternet;
+import com.crisnello.notereader.util.CustomAlert;
 import com.crisnello.notereader.util.Internet;
 import com.crisnello.notereader.util.PreferencesUtil;
 import com.google.gson.Gson;
@@ -55,8 +57,6 @@ public class MainActivity extends AppCompatActivity
     static final String ACTION_SCAN = "com.google.zxing.client.android.SCAN";
     public static final int ACTIVITY_REQUEST_QR_CODE = 0;
     public static final int ACTIVITY_REQUEST_CODE = 1;
-
-    //private List<Nota> notas = new ArrayList<Nota>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +118,13 @@ public class MainActivity extends AppCompatActivity
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(), "Não foi possível carregar as notas cadastradas! ", Toast.LENGTH_LONG).show();
+                            if(!ConexaoInternet.verificaConexao(getApplicationContext())){
+                                CustomAlert alert = new CustomAlert(MainActivity.this);
+                                alert.setMessage("Você não está conectado na internet, efetue a conexão e tente novamente!");
+                                alert.show();
+                            }else {
+                                Toast.makeText(getApplicationContext(), "Não foi possível carregar as notas cadastradas! ", Toast.LENGTH_LONG).show();
+                            }
                         }
                     });
                 }
@@ -160,12 +166,18 @@ public class MainActivity extends AppCompatActivity
         downloadDialog.setMessage(message);
         downloadDialog.setPositiveButton(buttonYes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialogInterface, int i) {
-                Uri uri = Uri.parse("market://search?q=pname:" + "com.google.zxing.client.android");
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                try {
-                    act.startActivity(intent);
-                } catch (ActivityNotFoundException anfe) {
+                if(ConexaoInternet.verificaConexao(act)) {
+                    Uri uri = Uri.parse("market://search?q=pname:" + "com.google.zxing.client.android");
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    try {
+                        act.startActivity(intent);
+                    } catch (ActivityNotFoundException anfe) {
 
+                    }
+                }else{
+                    CustomAlert alert = new CustomAlert(act);
+                    alert.setMessage("Você não está conectado na internet, efetue a conexão e tente instalar novamente!");
+                    alert.show();
                 }
             }
         });
@@ -179,35 +191,41 @@ public class MainActivity extends AppCompatActivity
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == ACTIVITY_REQUEST_QR_CODE) {
             if (resultCode == RESULT_OK) {
-                contents = intent.getStringExtra("SCAN_RESULT");
-                format = intent.getStringExtra("SCAN_RESULT_FORMAT");
+                if(!ConexaoInternet.verificaConexao(getApplicationContext())){
+                    CustomAlert alert = new CustomAlert(MainActivity.this);
+                    alert.setMessage("Você não está conectado na internet, efetue a conexão e leia novamente essa nota!");
+                    alert.show();
+                }else {
+                    contents = intent.getStringExtra("SCAN_RESULT");
+                    format = intent.getStringExtra("SCAN_RESULT_FORMAT");
 
-                Toast toast = Toast.makeText(this, "Content:" + contents + " Format:" + format, Toast.LENGTH_LONG);
-                toast.show();
+                    Toast toast = Toast.makeText(this, "Content:" + contents + " Format:" + format, Toast.LENGTH_LONG);
+                    toast.show();
 
-                //VERIFICAR MELHOR LUGAR, TEMPORARIAMENTE
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        HashMap<String, String> hash = new HashMap<String, String>();
-                        hash.put("id_usuario",String.valueOf(user.getId()));
-                        hash.put("str_qr_code",contents);
-                        String respJson = Internet.postHttp(Config.WS_URL_NOTA,hash);
-                        //Log.i("Result .postHttp",respJson);
-                        try {
-                            Nota notaInserida = new Gson().fromJson(respJson, Nota.class);
-                            itens.add(notaInserida);
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ((BaseAdapter) listaDeNotas.getAdapter()).notifyDataSetChanged();
-                                }
-                            });
-                        }catch(Exception e){
-                            updateNotas();
+                    //VERIFICAR MELHOR LUGAR, TEMPORARIAMENTE
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            HashMap<String, String> hash = new HashMap<String, String>();
+                            hash.put("id_usuario", String.valueOf(user.getId()));
+                            hash.put("str_qr_code", contents);
+                            String respJson = Internet.postHttp(Config.WS_URL_NOTA, hash);
+                            //Log.i("Result .postHttp",respJson);
+                            try {
+                                Nota notaInserida = new Gson().fromJson(respJson, Nota.class);
+                                itens.add(notaInserida);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ((BaseAdapter) listaDeNotas.getAdapter()).notifyDataSetChanged();
+                                    }
+                                });
+                            } catch (Exception e) {
+                                updateNotas();
+                            }
                         }
-                    }
-                }).start();
+                    }).start();
+                }
 
             }
         }else if(requestCode == ACTIVITY_REQUEST_CODE){
@@ -272,12 +290,17 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_share) {
 
-            Intent compartilha = new Intent(Intent.ACTION_SEND);
-            compartilha.setType("text/plain");
-            compartilha.putExtra(Intent.EXTRA_SUBJECT, "Install Note Reader");
-            compartilha.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=com.crisnello.notereader");
-            startActivity(Intent.createChooser(compartilha, "install Note Reader"));
-
+            if(!ConexaoInternet.verificaConexao(getApplicationContext())){
+                CustomAlert alert = new CustomAlert(MainActivity.this);
+                alert.setMessage("Você não está conectado na internet, efetue a conexão e tente compartilhar novamente!");
+                alert.show();
+            }else {
+                Intent compartilha = new Intent(Intent.ACTION_SEND);
+                compartilha.setType("text/plain");
+                compartilha.putExtra(Intent.EXTRA_SUBJECT, "Install Note Reader");
+                compartilha.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=com.crisnello.notereader");
+                startActivity(Intent.createChooser(compartilha, "install Note Reader"));
+            }
         } else if (id == R.id.nav_send) {
 
         }

@@ -43,8 +43,8 @@ public class CustomAlert extends Dialog
         if(buttonOptions== ButtonOptions.YesORNo)
         {
             (getWindow().findViewById(R.id.btn2)).setVisibility(View.VISIBLE);
-            ((TextView)getWindow().findViewById(R.id.txtBtn2)).setText("NO");
-            ((TextView)getWindow().findViewById(R.id.txtBtn)).setText("YES");
+            ((TextView)getWindow().findViewById(R.id.txtBtn2)).setText("Não");
+            ((TextView)getWindow().findViewById(R.id.txtBtn)).setText("Sim");
 
             (getWindow().findViewById(R.id.btn2)).setOnClickListener(new View.OnClickListener() {
                 @Override

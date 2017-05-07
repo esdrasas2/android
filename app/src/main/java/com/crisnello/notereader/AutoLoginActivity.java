@@ -14,12 +14,15 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.crisnello.notereader.config.Config;
 import com.crisnello.notereader.entitie.Usuario;
+import com.crisnello.notereader.util.ConexaoInternet;
+import com.crisnello.notereader.util.CustomAlert;
 import com.crisnello.notereader.util.Internet;
 import com.crisnello.notereader.util.PreferencesUtil;
 import com.google.gson.Gson;
@@ -37,8 +40,18 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
     private View mProgressView;
     private View mLoginFormView;
 
+    private boolean Connected = true;
+
     public void showToast(String pMsg){
         Toast.makeText(getApplicationContext(), pMsg, Toast.LENGTH_LONG).show();
+    }
+
+    public boolean isConnected() {
+        return Connected;
+    }
+
+    public void setConnected(boolean connected) {
+        Connected = connected;
     }
 
     @Override
@@ -66,7 +79,7 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
             String pNome = PreferencesUtil.getPref(PreferencesUtil.NOME, getApplicationContext());
             String pEmail = PreferencesUtil.getPref(PreferencesUtil.EMAIL, getApplicationContext());
 
-            Log.e("PreferencesUtil", "id :" + pId + " nome :" + pNome + " email :" + pEmail);
+           // Log.e("PreferencesUtil", "id :" + pId + " nome :" + pNome + " email :" + pEmail);
 
             if (pId > 0) {
                 Usuario user = new Usuario();
@@ -194,19 +207,23 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
 
         @Override
         protected Boolean doInBackground(Void... params) {
-
+            if(!ConexaoInternet.verificaConexao(getApplicationContext())){
+                setConnected(false);
+                return false;
+            }else {
                 HashMap<String, String> hash = new HashMap<String, String>();
 
-                hash.put("login_username",mEmail);
-                hash.put("login_password",mPassword);
+                hash.put("login_username", mEmail);
+                hash.put("login_password", mPassword);
 
-                String respJson = Internet.postHttp(Config.WS_URL_LOGIN,hash);
+                String respJson = Internet.postHttp(Config.WS_URL_LOGIN, hash);
                 user = new Gson().fromJson(respJson, Usuario.class);
-               // Log.i("Usuario",user.toString());
-                if(user.getId() == -1 || user.getIdCliente() == -1){
+                // Log.i("Usuario",user.toString());
+                if (user.getId() == -1 || user.getIdCliente() == -1) {
                     return false;
                 }
-                return  true;
+                return true;
+            }
         }
 
         @Override
@@ -226,8 +243,14 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
                 startActivityForResult(intent,ACTIVITY_REQUEST_CODE);
 
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                if(!isConnected()){
+                            CustomAlert alert = new CustomAlert(AutoLoginActivity.this);
+                            alert.setMessage("Você não está conectado na internet, efetue a conexão e tente novamente!");
+                            alert.show();
+                }else {
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
+                }
             }
         }
 
