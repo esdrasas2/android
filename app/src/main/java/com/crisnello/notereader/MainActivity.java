@@ -95,6 +95,12 @@ public class MainActivity extends AppCompatActivity
         updateNotas();
     }
 
+    public void showAlert(String pMsg){
+        CustomAlert alert = new CustomAlert(MainActivity.this);
+        alert.setMessage(pMsg);
+        alert.show();
+    }
+
     public void updateNotas(){
         new Thread(new Runnable() {
             @Override
@@ -119,9 +125,7 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void run() {
                             if(!ConexaoInternet.verificaConexao(getApplicationContext())){
-                                CustomAlert alert = new CustomAlert(MainActivity.this);
-                                alert.setMessage("Você não está conectado na internet, efetue a conexão e tente novamente!");
-                                alert.show();
+                                showAlert("Você não está conectado na internet, efetue a conexão e tente novamente!");
                             }else {
                                 Toast.makeText(getApplicationContext(), "Não foi possível carregar as notas cadastradas! ", Toast.LENGTH_LONG).show();
                             }
@@ -192,9 +196,7 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == ACTIVITY_REQUEST_QR_CODE) {
             if (resultCode == RESULT_OK) {
                 if(!ConexaoInternet.verificaConexao(getApplicationContext())){
-                    CustomAlert alert = new CustomAlert(MainActivity.this);
-                    alert.setMessage("Você não está conectado na internet, efetue a conexão e leia novamente essa nota!");
-                    alert.show();
+                    showAlert("Você não está conectado na internet, efetue a conexão e leia novamente essa nota!");
                 }else {
                     contents = intent.getStringExtra("SCAN_RESULT");
                     format = intent.getStringExtra("SCAN_RESULT_FORMAT");
@@ -291,9 +293,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_share) {
 
             if(!ConexaoInternet.verificaConexao(getApplicationContext())){
-                CustomAlert alert = new CustomAlert(MainActivity.this);
-                alert.setMessage("Você não está conectado na internet, efetue a conexão e tente compartilhar novamente!");
-                alert.show();
+                showAlert("Você não está conectado na internet, efetue a conexão e tente compartilhar novamente!");
             }else {
                 Intent compartilha = new Intent(Intent.ACTION_SEND);
                 compartilha.setType("text/plain");

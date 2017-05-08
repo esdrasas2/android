@@ -16,4 +16,11 @@
     <string name="navigation_drawer_close">Fechar</string>
 
     <string name="action_settings">Configurações</string>
+
+    <string name="action_filter">Filtrar</string>
+
+
+
+    <string name="facebook_app_id">220647798426630</string>
+    <string name="fb_login_protocol_scheme">fb220647798426630</string>
 </resources>

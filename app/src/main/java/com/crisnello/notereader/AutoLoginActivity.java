@@ -5,33 +5,54 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.crisnello.notereader.config.Config;
 import com.crisnello.notereader.entitie.Usuario;
+import com.crisnello.notereader.entitie.UsuarioFacebook;
 import com.crisnello.notereader.util.ConexaoInternet;
 import com.crisnello.notereader.util.CustomAlert;
 import com.crisnello.notereader.util.Internet;
 import com.crisnello.notereader.util.PreferencesUtil;
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.gson.Gson;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCallbacks<Cursor> {
 
+    private LoginButton loginButton;
+    private CallbackManager callbackManager;
     private Usuario user;
+    private UsuarioFacebook userFacebook;
     public static final int ACTIVITY_REQUEST_CODE = 1;
     private UserLoginTask mAuthTask = null;
 
@@ -58,6 +79,72 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auto_login);
+
+
+//        try {
+//            PackageInfo info = getPackageManager().getPackageInfo("com.crisnello.notereader", PackageManager.GET_SIGNATURES);
+//            for (Signature signature : info.signatures) {
+//                MessageDigest md = MessageDigest.getInstance("SHA");
+//                md.update(signature.toByteArray());
+//                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+//            }
+//        } catch (PackageManager.NameNotFoundException e) {
+//
+//        } catch (NoSuchAlgorithmException e) {
+//
+//        }
+
+        loginButton = (LoginButton) findViewById(R.id.login_button);
+        loginButton.setReadPermissions("public_profile", "email");
+        // If using in a fragment
+        //loginButton.setFragment(this);
+        // Other app specific specialization
+        callbackManager = CallbackManager.Factory.create();
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                // App code
+                executeGraphRequest(loginResult.getAccessToken().getUserId());
+            }
+            @Override
+            public void onCancel() {
+                // App code
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                // App code
+            }
+
+        });
+        // Callback registration
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                // App code
+                executeGraphRequest(loginResult.getAccessToken().getUserId());
+
+            }
+
+            @Override
+            public void onCancel() {
+                // App code
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                // App code
+            }
+        });
+
+        Button mFacebookButton = (Button) findViewById(R.id.facebook_button);
+        mFacebookButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LoginManager.getInstance().logInWithReadPermissions(AutoLoginActivity.this, Arrays.asList("public_profile", "email"));
+            }
+        });
 
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -91,6 +178,88 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
                 startActivityForResult(intent, ACTIVITY_REQUEST_CODE);
             }
         }
+    }
+
+    public void disconnectFromFacebook() {
+
+        LoginManager.getInstance().logOut();
+
+//
+//        Session session = Session.getActiveSession();
+//        if (session != null) {
+//
+//            if (!session.isClosed()) {
+//                session.closeAndClearTokenInformation();
+//                //clear your preferences if saved
+//            }
+//        } else {
+//
+//            session = new Session(context);
+//            Session.setActiveSession(session);
+//
+//            session.closeAndClearTokenInformation();
+//            //clear your preferences if saved
+//        }
+
+    }
+
+    private void executeGraphRequest(final String userId){
+        GraphRequest request =new GraphRequest(AccessToken.getCurrentAccessToken(), userId, null, HttpMethod.GET, new GraphRequest.Callback() {
+            @Override
+            public void onCompleted(GraphResponse response) {
+                //Log.i("FACEBOOK", Profile.getCurrentProfile().toString());
+
+                String respFacebookJson = response.getJSONObject().toString();
+                //Log.i("Login FaceBook Usuario", respFacebookJson);
+
+                userFacebook = new Gson().fromJson(respFacebookJson, UsuarioFacebook.class);
+                //Log.i("UsuarioFacebook",userFacebook.toString());
+
+                if(!ConexaoInternet.verificaConexao(getApplicationContext())){
+                    showAlert("Você não está conectado na internet, efetue a conexão e tente novamente!");
+                }else {
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                HashMap<String, String> hash = new HashMap<String, String>();
+                                hash.put("user_nome", userFacebook.getName());
+                                hash.put("user_email", userFacebook.getEmail());
+                                String respJson = Internet.postHttp(Config.WS_URL_ADD_USER, hash);
+                                //Log.i("Login ADD Usuario ", respJson);
+                                user = new Gson().fromJson(respJson, Usuario.class);
+
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (user.getId() == -1 || user.getIdCliente() == -1) {
+                                             showAlert("Não foi possível logar/adicionar usuário no servidor do bancodenotas. \n contato: crisnello@crisnello.com");
+                                            } else {
+                                                mPasswordView.setVisibility(View.GONE);
+                                                mEmailView.setText(user.getEmail());
+                                                goToApp();
+                                            }
+                                        }
+                                    });
+
+                            }catch(Exception e){
+                                Log.e("executeGraphRequest",e.getMessage());
+                            }
+                        }
+                    }).start();
+
+
+                }
+
+            }
+        });
+
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id, name, email");
+        request.setParameters(parameters);
+        request.executeAsync();
+
     }
 
     private void attemptLogin() {
@@ -172,14 +341,42 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
     }
 
 
+    public void goToApp(){
+
+        if(user == null || user.getId() == -1){
+            showAlert("Usuario nao encontrado. Obs: goToApp()");
+        }else {
+            try {
+                showToast("Seja bem vindo " + user.getNome());
+                PreferencesUtil.putPrefLong(PreferencesUtil.ID, user.getId(), getApplicationContext());
+                PreferencesUtil.putPref(PreferencesUtil.NOME, user.getNome(), getApplicationContext());
+                PreferencesUtil.putPref(PreferencesUtil.EMAIL, user.getEmail(), getApplicationContext());
+                Intent intent = new Intent(AutoLoginActivity.this, MainActivity.class);
+                intent.putExtra("USER", user);
+                startActivityForResult(intent, ACTIVITY_REQUEST_CODE);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void showAlert(String pMsg){
+        CustomAlert alert = new CustomAlert(AutoLoginActivity.this);
+        alert.setMessage(pMsg);
+        alert.show();
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         //Log.e("Login.onActivityResult","requestCode :"+requestCode+" resultCode : "+resultCode);
         if(requestCode == ACTIVITY_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
+                disconnectFromFacebook();
                 finish();
             }
+        }else{
+            callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -187,6 +384,7 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
     protected void onResume() {
         super.onResume();
         if (getIntent().getBooleanExtra("EXIT", false)) {
+            disconnectFromFacebook();
             finish();
         }
     }
@@ -211,14 +409,13 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
                 setConnected(false);
                 return false;
             }else {
+                setConnected(true);
                 HashMap<String, String> hash = new HashMap<String, String>();
-
                 hash.put("login_username", mEmail);
                 hash.put("login_password", mPassword);
-
                 String respJson = Internet.postHttp(Config.WS_URL_LOGIN, hash);
+                //Log.i("Login Usuario ",respJson);
                 user = new Gson().fromJson(respJson, Usuario.class);
-                // Log.i("Usuario",user.toString());
                 if (user.getId() == -1 || user.getIdCliente() == -1) {
                     return false;
                 }
@@ -232,21 +429,12 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
             showProgress(false);
 
             if (success) {
-                showToast("Seja bem vindo "+user.getNome());
 
-                PreferencesUtil.putPrefLong(PreferencesUtil.ID,user.getId(), getApplicationContext());
-                PreferencesUtil.putPref(PreferencesUtil.NOME, user.getNome(),getApplicationContext());
-                PreferencesUtil.putPref(PreferencesUtil.EMAIL,user.getEmail(),getApplicationContext());
-
-                Intent intent = new Intent(AutoLoginActivity.this, MainActivity.class);
-                intent.putExtra("USER",user);
-                startActivityForResult(intent,ACTIVITY_REQUEST_CODE);
+                goToApp();
 
             } else {
                 if(!isConnected()){
-                            CustomAlert alert = new CustomAlert(AutoLoginActivity.this);
-                            alert.setMessage("Você não está conectado na internet, efetue a conexão e tente novamente!");
-                            alert.show();
+                           showAlert("Você não está conectado na internet, efetue a conexão e tente novamente!");
                 }else {
                     mPasswordView.setError(getString(R.string.error_incorrect_password));
                     mPasswordView.requestFocus();

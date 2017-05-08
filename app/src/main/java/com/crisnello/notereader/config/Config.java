@@ -14,6 +14,9 @@ package com.crisnello.notereader.config;
         public final static String WS_URL_NOTAS = "http://177.71.246.197/bancodenotas/pages/nota/api/notas.jsf"; //SO PASSA o id_usuario
 
 
+        public final static String WS_URL_ADD_USER = "http://177.71.246.197/bancodenotas/pages/usuario/api/usuarioAdd.jsf";
+
+
         //public final static String WS_FILE_PATH="system/file/";
 
     }
