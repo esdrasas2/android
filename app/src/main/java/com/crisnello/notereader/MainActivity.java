@@ -35,6 +35,8 @@ import com.crisnello.notereader.util.Internet;
 import com.crisnello.notereader.util.PreferencesUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,8 +56,6 @@ public class MainActivity extends AppCompatActivity
     private String contents;
 
     private Usuario user;
-    static final String ACTION_SCAN = "com.google.zxing.client.android.SCAN";
-    public static final int ACTIVITY_REQUEST_QR_CODE = 0;
     public static final int ACTIVITY_REQUEST_CODE = 1;
 
     @Override
@@ -155,84 +155,70 @@ public class MainActivity extends AppCompatActivity
 
 
     public void scanQR(View v) {
-        try {
-            Intent intent = new Intent(ACTION_SCAN);
-            intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
-            startActivityForResult(intent, ACTIVITY_REQUEST_QR_CODE);
-        } catch (ActivityNotFoundException anfe) {
-            showDialog(MainActivity.this, "Scanner não Encontrado", "Baixar o scanner de QRCODE do google?", "Sim", "Não").show();
-        }
+//        new IntentIntegrator(this).initiateScan();
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+        integrator.setPrompt("QR_CODE de uma NFC-e");
+//        integrator.setCameraId(0);  // Use a specific camera of the device
+        integrator.setBeepEnabled(true);
+        integrator.setBarcodeImageEnabled(true);
+        integrator.initiateScan();
     }
 
-    private static AlertDialog showDialog(final Activity act, CharSequence title, CharSequence message, CharSequence buttonYes, CharSequence buttonNo) {
-        AlertDialog.Builder downloadDialog = new AlertDialog.Builder(act);
-        downloadDialog.setTitle(title);
-        downloadDialog.setMessage(message);
-        downloadDialog.setPositiveButton(buttonYes, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if(ConexaoInternet.verificaConexao(act)) {
-                    Uri uri = Uri.parse("market://search?q=pname:" + "com.google.zxing.client.android");
-                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                    try {
-                        act.startActivity(intent);
-                    } catch (ActivityNotFoundException anfe) {
-
-                    }
-                }else{
-                    CustomAlert alert = new CustomAlert(act);
-                    alert.setMessage("Você não está conectado na internet, efetue a conexão e tente instalar novamente!");
-                    alert.show();
-                }
-            }
-        });
-        downloadDialog.setNegativeButton(buttonNo, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialogInterface, int i) {
-            }
-        });
-        return downloadDialog.show();
-    }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == ACTIVITY_REQUEST_QR_CODE) {
-            if (resultCode == RESULT_OK) {
-                if(!ConexaoInternet.verificaConexao(getApplicationContext())){
-                    showAlert("Você não está conectado na internet, efetue a conexão e leia novamente essa nota!");
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if(result != null) {
+            if(result.getContents() == null) {
+                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+            } else {
+                String strConteudo = result.getContents();
+                //CAMPOS OBRIGATORIOS
+                // chNFe=41170575121210000137650010002265611890643922
+                // tpAmb=1
+                // cIdToken=000001
+
+                if(!strConteudo.contains("chNFe") || !strConteudo.contains("tpAmb") || !strConteudo.contains("cIdToken")){
+                    showAlert("O conteúdo deste QR_CODE não é de uma NFC-e válida");
                 }else {
-                    contents = intent.getStringExtra("SCAN_RESULT");
-                    format = intent.getStringExtra("SCAN_RESULT_FORMAT");
 
-                    Toast toast = Toast.makeText(this, "Content:" + contents + " Format:" + format, Toast.LENGTH_LONG);
-                    toast.show();
+                    Toast.makeText(this, "Scanned: " + strConteudo, Toast.LENGTH_LONG).show();
+                    if (!ConexaoInternet.verificaConexao(getApplicationContext())) {
+                        showAlert("Você não está conectado na internet, efetue a conexão e leia novamente essa nota!");
+                    } else {
+                        contents = result.getContents();
 
-                    //VERIFICAR MELHOR LUGAR, TEMPORARIAMENTE
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            HashMap<String, String> hash = new HashMap<String, String>();
-                            hash.put("id_usuario", String.valueOf(user.getId()));
-                            hash.put("str_qr_code", contents);
-                            String respJson = Internet.postHttp(Config.WS_URL_NOTA, hash);
-                            //Log.i("Result .postHttp",respJson);
-                            try {
-                                Nota notaInserida = new Gson().fromJson(respJson, Nota.class);
-                                itens.add(notaInserida);
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        ((BaseAdapter) listaDeNotas.getAdapter()).notifyDataSetChanged();
-                                    }
-                                });
-                            } catch (Exception e) {
-                                updateNotas();
+                        //VERIFICAR MELHOR LUGAR, TEMPORARIAMENTE
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                HashMap<String, String> hash = new HashMap<String, String>();
+                                hash.put("id_usuario", String.valueOf(user.getId()));
+                                hash.put("str_qr_code", contents);
+                                String respJson = Internet.postHttp(Config.WS_URL_NOTA, hash);
+                                //Log.i("Result .postHttp",respJson);
+                                try {
+                                    Nota notaInserida = new Gson().fromJson(respJson, Nota.class);
+                                    itens.add(notaInserida);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            ((BaseAdapter) listaDeNotas.getAdapter()).notifyDataSetChanged();
+                                        }
+                                    });
+                                } catch (Exception e) {
+                                    updateNotas();
+                                }
                             }
-                        }
-                    }).start();
+                        }).start();
+                    }
                 }
 
             }
-        }else if(requestCode == ACTIVITY_REQUEST_CODE){
+        } else if (requestCode == ACTIVITY_REQUEST_CODE){
             updateNotas();
         }
+
     }
 
 
