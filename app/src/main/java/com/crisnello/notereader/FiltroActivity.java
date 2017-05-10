@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.crisnello.notereader.entitie.Usuario;
 
@@ -16,6 +17,7 @@ import java.util.Calendar;
 
 public class FiltroActivity extends AppCompatActivity {
 
+    private TextView txt_msg_data;
     private EditText edt_valor, edt_data;
     private int year, month, day;
     DatePickerDialog.OnDateSetListener ondate = new DatePickerDialog.OnDateSetListener() {
@@ -49,6 +51,8 @@ public class FiltroActivity extends AppCompatActivity {
         month = cal.get(Calendar.MONTH);
         day = cal.get(Calendar.DAY_OF_MONTH);
 
+        txt_msg_data = (TextView) findViewById(R.id.txt_msg_data);
+
         edt_data = (EditText) findViewById(R.id.edt_data);
         edt_data.setOnClickListener(new View.OnClickListener() {
 
@@ -57,6 +61,20 @@ public class FiltroActivity extends AppCompatActivity {
                 showDatePicker();
             }
         });
+
+
+        edt_data.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus)
+                {
+                    txt_msg_data.setText("Clique novamente para abrir o Calendário");
+                }else{
+                    txt_msg_data.setText("");
+                }
+            }
+        });
+
         edt_valor = (EditText) findViewById(R.id.edt_valor);
         Button buscar = (Button) findViewById(R.id.btn_buscar);
         buscar.setOnClickListener(new View.OnClickListener() {
