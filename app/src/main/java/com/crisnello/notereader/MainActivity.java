@@ -112,7 +112,8 @@ public class MainActivity extends AppCompatActivity
         updateNotas();
 
         if (getIntent().getBooleanExtra("ADD", false)) {
-            fab.performClick();
+            //fab.performClick();
+            scanQR(null);
         }
 
 

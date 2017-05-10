@@ -33,6 +33,7 @@ public class MenuActivity extends AppCompatActivity {
                 intent.putExtra("ADD", true);
                 intent.putExtra("USER", user);
                 startActivity(intent);
+                finish();
 
             }
         });
