@@ -7,7 +7,7 @@ android {
         applicationId "com.crisnello.notereader"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 8
+        versionCode 9
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -30,15 +30,15 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile files('libs/gson-2.8.0.jar')
+
+    
+    //compile 'com.android.support:appcompat-v7:23.1.0'   // Version 23+ is required
     compile 'org.apache.httpcomponents:httpcore:4.3'
     //noinspection GradleCompatible
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    testCompile 'junit:junit:4.12'
-
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
-
     compile 'com.journeyapps:zxing-android-embedded:3.5.0'
-    //compile 'com.android.support:appcompat-v7:23.1.0'   // Version 23+ is required
+    testCompile 'junit:junit:4.12'
 }

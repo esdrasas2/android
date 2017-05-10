@@ -1,10 +1,6 @@
 package com.crisnello.notereader;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
-import android.content.DialogInterface;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -16,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,7 +27,7 @@ import com.crisnello.notereader.entitie.Nota;
 import com.crisnello.notereader.entitie.Usuario;
 import com.crisnello.notereader.util.AdapterListView;
 import com.crisnello.notereader.util.ConexaoInternet;
-import com.crisnello.notereader.util.CustomAlert;
+import com.crisnello.notereader.util.Util;
 import com.crisnello.notereader.util.Internet;
 import com.crisnello.notereader.util.PreferencesUtil;
 import com.google.gson.Gson;
@@ -40,6 +37,7 @@ import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -51,12 +49,15 @@ public class MainActivity extends AppCompatActivity
     private AdapterListView adapterListView;
     private ArrayList<Nota> itens;
     //----------------
+    private double tValor;
 
+    //-----------------
     private String format;
     private String contents;
 
     private Usuario user;
     public static final int ACTIVITY_REQUEST_CODE = 1;
+    public static final int ACTIVITY_FILTRO_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,24 +83,23 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        user = (Usuario) getIntent().getSerializableExtra("USER");
-
-        View navigationViewHeader = navigationView.getHeaderView(0);
-
-        TextView tv_login = (TextView) navigationViewHeader.findViewById(R.id.tv_login);
-        tv_login.setText(user.getEmail());
-
         listaDeNotas = (ListView) findViewById(R.id.lista);
         listaDeNotas.setOnItemClickListener(this);
 
+        user = (Usuario) getIntent().getSerializableExtra("USER");
+        View navigationViewHeader = navigationView.getHeaderView(0);
+        TextView tv_login = (TextView) navigationViewHeader.findViewById(R.id.tv_login);
+        tv_login.setText(user.getEmail());
+
+
+        tValor = getIntent().getDoubleExtra("VALOR",0.0);
+
         updateNotas();
+
+
+
     }
 
-    public void showAlert(String pMsg){
-        CustomAlert alert = new CustomAlert(MainActivity.this);
-        alert.setMessage(pMsg);
-        alert.show();
-    }
 
     public void updateNotas(){
         new Thread(new Runnable() {
@@ -113,10 +113,19 @@ public class MainActivity extends AppCompatActivity
                     Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
                     Nota[] notaArray = gson.fromJson(respJson, Nota[].class);
                     itens = new ArrayList<Nota>(Arrays.asList(notaArray));
-
+                    if(tValor > 0.0){
+                        ArrayList<Nota> tNotas = new ArrayList<Nota>();
+                        for (Nota n : itens) {
+                            if (n.getValor() == tValor) {
+                                tNotas.add(n);
+                            }
+                        }
+                        itens = tNotas;
+                    }
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+
                             createListView();
                         }
                     });
@@ -125,7 +134,7 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void run() {
                             if(!ConexaoInternet.verificaConexao(getApplicationContext())){
-                                showAlert("Você não está conectado na internet, efetue a conexão e tente novamente!");
+                                (new Util(MainActivity.this)).showAlert("Você não está conectado na internet, efetue a conexão e tente novamente!");
                             }else {
                                 Toast.makeText(getApplicationContext(), "Não foi possível carregar as notas cadastradas! ", Toast.LENGTH_LONG).show();
                             }
@@ -167,6 +176,7 @@ public class MainActivity extends AppCompatActivity
 
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        //Log.e("onActivityResult","requestCode :"+requestCode);
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if(result != null) {
             if(result.getContents() == null) {
@@ -179,12 +189,12 @@ public class MainActivity extends AppCompatActivity
                 // cIdToken=000001
 
                 if(!strConteudo.contains("chNFe") || !strConteudo.contains("tpAmb") || !strConteudo.contains("cIdToken")){
-                    showAlert("O conteúdo deste QR_CODE não é de uma NFC-e válida");
+                    (new Util(MainActivity.this)).showAlert("O conteúdo deste QR_CODE não é de uma NFC-e válida");
                 }else {
 
                     Toast.makeText(this, "Scanned: " + strConteudo, Toast.LENGTH_LONG).show();
                     if (!ConexaoInternet.verificaConexao(getApplicationContext())) {
-                        showAlert("Você não está conectado na internet, efetue a conexão e leia novamente essa nota!");
+                        (new Util(MainActivity.this)).showAlert("Você não está conectado na internet, efetue a conexão e leia novamente essa nota!");
                     } else {
                         contents = result.getContents();
 
@@ -217,6 +227,11 @@ public class MainActivity extends AppCompatActivity
             }
         } else if (requestCode == ACTIVITY_REQUEST_CODE){
             updateNotas();
+        } else if (requestCode == ACTIVITY_FILTRO_CODE){
+
+            tValor = getIntent().getDoubleExtra("VALOR",0.0);
+            Log.e("onActivityResult","resultCode "+resultCode+" tValor Recebe :"+tValor);
+
         }
 
     }
@@ -246,6 +261,14 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }else if(id == R.id.action_filtrar){
+
+            Intent intent = new Intent(MainActivity.this,
+                    FiltroActivity.class);
+            intent.putExtra("USER", user);
+            startActivityForResult(intent,ACTIVITY_FILTRO_CODE);
+
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -279,7 +302,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_share) {
 
             if(!ConexaoInternet.verificaConexao(getApplicationContext())){
-                showAlert("Você não está conectado na internet, efetue a conexão e tente compartilhar novamente!");
+                (new Util(MainActivity.this)).showAlert("Você não está conectado na internet, efetue a conexão e tente compartilhar novamente!");
             }else {
                 Intent compartilha = new Intent(Intent.ACTION_SEND);
                 compartilha.setType("text/plain");

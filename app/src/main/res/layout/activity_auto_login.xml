@@ -25,7 +25,7 @@
         android:layout_marginLeft="20dp"
 
         android:layout_marginRight="20dp"
-        android:background="@drawable/com_facebook_button_background"
+        android:background="@drawable/com_facebook_button_login_background"
         android:orientation="vertical">
 
         <LinearLayout
@@ -141,7 +141,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
-                android:background="@drawable/button_facebook_transparent"
+                android:background="@drawable/button_facebook"
                 android:padding="16dp"
                 android:text="Entrar com Facebook"
                 android:textAllCaps="false"

@@ -46,7 +46,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.HashMap;
-
+import com.crisnello.notereader.util.Util;
 public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCallbacks<Cursor> {
 
     private LoginButton loginButton;
@@ -216,7 +216,7 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
                 //Log.i("UsuarioFacebook",userFacebook.toString());
 
                 if(!ConexaoInternet.verificaConexao(getApplicationContext())){
-                    showAlert("Você não está conectado na internet, efetue a conexão e tente novamente!");
+                    (new Util(AutoLoginActivity.this)).showAlert("Você não está conectado na internet, efetue a conexão e tente novamente!");
                 }else {
 
                     new Thread(new Runnable() {
@@ -234,7 +234,7 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
                                         @Override
                                         public void run() {
                                             if (user.getId() == -1 || user.getIdCliente() == -1) {
-                                             showAlert("Não foi possível logar/adicionar usuário no servidor do bancodenotas. \n contato: crisnello@crisnello.com");
+                                                (new Util(AutoLoginActivity.this)).showAlert("Não foi possível logar/adicionar usuário no servidor do bancodenotas. \n contato: crisnello@crisnello.com");
                                             } else {
                                                 mPasswordView.setVisibility(View.GONE);
                                                 mEmailView.setText(user.getEmail());
@@ -344,7 +344,7 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
     public void goToApp(){
 
         if(user == null || user.getId() == -1){
-            showAlert("Usuario nao encontrado. Obs: goToApp()");
+            (new Util(AutoLoginActivity.this)).showAlert("Usuario nao encontrado. Obs: goToApp()");
         }else {
             try {
                 showToast("Seja bem vindo " + user.getNome());
@@ -358,12 +358,6 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
                 e.printStackTrace();
             }
         }
-    }
-
-    public void showAlert(String pMsg){
-        CustomAlert alert = new CustomAlert(AutoLoginActivity.this);
-        alert.setMessage(pMsg);
-        alert.show();
     }
 
 
@@ -434,7 +428,7 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
 
             } else {
                 if(!isConnected()){
-                           showAlert("Você não está conectado na internet, efetue a conexão e tente novamente!");
+                    (new Util(AutoLoginActivity.this)).showAlert("Você não está conectado na internet, efetue a conexão e tente novamente!");
                 }else {
                     mPasswordView.setError(getString(R.string.error_incorrect_password));
                     mPasswordView.requestFocus();

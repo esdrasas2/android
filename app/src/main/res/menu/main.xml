@@ -9,7 +9,6 @@
         app:showAsAction="never" />
 
     <item
-        android:visible="false"
         android:id="@+id/action_filtrar"
         android:orderInCategory="100"
         android:title="@string/action_filter"
