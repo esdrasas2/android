@@ -35,6 +35,7 @@ import com.google.gson.GsonBuilder;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -49,7 +50,9 @@ public class MainActivity extends AppCompatActivity
     private AdapterListView adapterListView;
     private ArrayList<Nota> itens;
     //----------------
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     private double tValor;
+    private String tData;
 
     //-----------------
     private String format;
@@ -93,6 +96,7 @@ public class MainActivity extends AppCompatActivity
 
 
         tValor = getIntent().getDoubleExtra("VALOR",0.0);
+        tData  = getIntent().getStringExtra("DATA");
 
         updateNotas();
 
@@ -113,10 +117,11 @@ public class MainActivity extends AppCompatActivity
                     Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
                     Nota[] notaArray = gson.fromJson(respJson, Nota[].class);
                     itens = new ArrayList<Nota>(Arrays.asList(notaArray));
-                    if(tValor > 0.0){
+                    if(tValor > 0.0 || (tData != null && !tData.isEmpty())){
                         ArrayList<Nota> tNotas = new ArrayList<Nota>();
                         for (Nota n : itens) {
-                            if (n.getValor() == tValor) {
+                            String strDataEmissao = sdf.format(n.getDataEmissao());
+                            if (n.getValor() == tValor || strDataEmissao.equals(tData)) {
                                 tNotas.add(n);
                             }
                         }
@@ -130,6 +135,7 @@ public class MainActivity extends AppCompatActivity
                         }
                     });
                 }catch(Exception e){
+                    e.printStackTrace();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -229,8 +235,8 @@ public class MainActivity extends AppCompatActivity
             updateNotas();
         } else if (requestCode == ACTIVITY_FILTRO_CODE){
 
-            tValor = getIntent().getDoubleExtra("VALOR",0.0);
-            Log.e("onActivityResult","resultCode "+resultCode+" tValor Recebe :"+tValor);
+//            tValor = getIntent().getDoubleExtra("VALOR",0.0);
+//            Log.e("onActivityResult","resultCode "+resultCode+" tValor Recebe :"+tValor);
 
         }
 

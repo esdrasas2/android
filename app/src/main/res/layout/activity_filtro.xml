@@ -45,6 +45,8 @@
             android:background="@drawable/button_facebook_transparent"
             android:ems="10"
             android:inputType="numberDecimal"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:textColor="#fff"
             tools:layout_editor_absoluteX="139dp"
             tools:layout_editor_absoluteY="118dp" />
@@ -77,6 +79,8 @@
             android:background="@drawable/button"
             android:ems="10"
             android:inputType="date"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:textColor="@color/colorPrimaryDark"
             tools:layout_editor_absoluteX="139dp"
             tools:layout_editor_absoluteY="34dp" />
