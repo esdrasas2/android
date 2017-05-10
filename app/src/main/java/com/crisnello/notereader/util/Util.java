@@ -1,7 +1,7 @@
 package com.crisnello.notereader.util;
 
 import android.content.Context;
-
+import android.widget.Toast;
 
 
 /**
@@ -16,6 +16,11 @@ public class Util {
         context = pContext;
 
     }
+
+    public void showToast(String pMsg){
+        Toast.makeText(context, pMsg, Toast.LENGTH_LONG).show();
+    }
+
 
     public void showAlert(String pMsg){
         CustomAlert alert = new CustomAlert(context);

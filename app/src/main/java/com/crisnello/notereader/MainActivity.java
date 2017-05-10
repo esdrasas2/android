@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener {
 
 
+    private FloatingActionButton fab;
+
     private ListView listaDeNotas;
     private AdapterListView adapterListView;
     private ArrayList<Nota> itens;
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity
     private Usuario user;
     public static final int ACTIVITY_REQUEST_CODE = 1;
     public static final int ACTIVITY_FILTRO_CODE = 2;
+    public static final int ACTIVITY_MENU_CODE = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +75,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -108,6 +111,9 @@ public class MainActivity extends AppCompatActivity
 
         updateNotas();
 
+        if (getIntent().getBooleanExtra("ADD", false)) {
+            fab.performClick();
+        }
 
 
     }
@@ -116,9 +122,12 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-        tValor = getIntent().getDoubleExtra("VALOR",0.0);
-        tData  = getIntent().getStringExtra("DATA");
-        Log.e("MainActivity","onResume - tValor "+tValor+" tData "+tData);
+//        tValor = getIntent().getDoubleExtra("VALOR",0.0);
+//        tData  = getIntent().getStringExtra("DATA");
+//        Log.e("MainActivity","onResume - tValor "+tValor+" tData "+tData);
+
+
+
     }
 
 
@@ -310,6 +319,13 @@ public class MainActivity extends AppCompatActivity
         startActivityForResult(intent,ACTIVITY_FILTRO_CODE);
     }
 
+    public void chamaMenuActivity(){
+
+        Intent intent = new Intent(MainActivity.this, MenuActivity.class);
+        intent.putExtra("USER", user);
+        startActivityForResult(intent,ACTIVITY_MENU_CODE);
+    }
+
     public void sair(){
         Intent intent = new Intent(getApplicationContext(), AutoLoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -331,6 +347,8 @@ public class MainActivity extends AppCompatActivity
             sair();
         }else if(id == R.id.nav_filter){
             chamaFiltroActivity();
+        }else if(id == R.id.nav_home){
+            chamaMenuActivity();
         }
         else if (id == R.id.nav_gallery) {
 

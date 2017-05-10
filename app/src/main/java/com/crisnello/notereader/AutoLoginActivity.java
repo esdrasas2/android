@@ -63,9 +63,6 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
 
     private boolean Connected = true;
 
-    public void showToast(String pMsg){
-        Toast.makeText(getApplicationContext(), pMsg, Toast.LENGTH_LONG).show();
-    }
 
     public boolean isConnected() {
         return Connected;
@@ -174,7 +171,7 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
                 user.setId(pId);
                 user.setNome(pNome);
                 user.setEmail(pEmail);
-                Intent intent = new Intent(AutoLoginActivity.this, MainActivity.class);
+                Intent intent = new Intent(AutoLoginActivity.this, MenuActivity.class);
                 intent.putExtra("USER", user);
                 startActivityForResult(intent, ACTIVITY_REQUEST_CODE);
             }
@@ -239,7 +236,7 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
                                             } else {
                                                 mPasswordView.setVisibility(View.GONE);
                                                 mEmailView.setText(user.getEmail());
-                                                goToApp();
+                                                goToMenu();
                                             }
                                         }
                                     });
@@ -342,17 +339,17 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
     }
 
 
-    public void goToApp(){
+    public void goToMenu(){
 
         if(user == null || user.getId() == -1){
             (new Util(AutoLoginActivity.this)).showAlert("Usuario nao encontrado. Obs: goToApp()");
         }else {
             try {
-                showToast("Seja bem vindo " + user.getNome());
+                (new Util(getApplicationContext())).showToast("Seja bem vindo " + user.getNome());
                 PreferencesUtil.putPrefLong(PreferencesUtil.ID, user.getId(), getApplicationContext());
                 PreferencesUtil.putPref(PreferencesUtil.NOME, user.getNome(), getApplicationContext());
                 PreferencesUtil.putPref(PreferencesUtil.EMAIL, user.getEmail(), getApplicationContext());
-                Intent intent = new Intent(AutoLoginActivity.this, MainActivity.class);
+                Intent intent = new Intent(AutoLoginActivity.this, MenuActivity.class);
                 intent.putExtra("USER", user);
                 startActivityForResult(intent, ACTIVITY_REQUEST_CODE);
             } catch (Exception e) {
@@ -425,7 +422,7 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
 
             if (success) {
 
-                goToApp();
+                goToMenu();
 
             } else {
                 if(!isConnected()){
