@@ -24,19 +24,7 @@ public class MenuActivity extends AppCompatActivity {
 
         user = (Usuario) getIntent().getSerializableExtra("USER");
 
-        iv_add_nota = (ImageView) findViewById(R.id.iv_add_nota);
-        iv_add_nota.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra("ADD", true);
-                intent.putExtra("USER", user);
-                startActivity(intent);
-                finish();
 
-            }
-        });
         iv_filter = (ImageView) findViewById(R.id.iv_filter);
         iv_filter.setOnClickListener(new View.OnClickListener() {
             @Override

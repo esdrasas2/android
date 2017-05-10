@@ -2,7 +2,7 @@
     <string name="app_name">Note Reader</string>
 
     <string name="title_filter">Consultar Notas</string>
-    <string name="info_notas">Clique na Nota para Ver +</string>
+    <string name="info_notas">Detalhes clicando na nota</string>
     <string name="title_home">Menu Inicial</string>
 
 

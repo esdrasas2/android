@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:background="@color/com_facebook_share_button_text_color"
     tools:context="com.crisnello.notereader.MenuActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:weightSum="1">
 
     <ImageView
         android:id="@+id/iv_filter"
@@ -22,6 +23,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
+
         <ImageView
             android:id="@+id/iv_notas"
             android:layout_width="137dp"
@@ -34,20 +36,15 @@
             tools:layout_editor_absoluteY="29dp" />
 
         <ImageView
-            android:id="@+id/iv_add_nota"
+            android:id="@+id/iv_sair"
             android:layout_width="137dp"
             android:layout_height="134dp"
             android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
             android:layout_marginTop="20dp"
             android:layout_weight="1"
-            app:srcCompat="@drawable/new_nota" />
+            app:srcCompat="@drawable/ic_sair" />
+
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/iv_sair"
-        android:layout_width="137dp"
-        android:layout_height="134dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="20dp"
-        app:srcCompat="@drawable/power" />
 </LinearLayout>

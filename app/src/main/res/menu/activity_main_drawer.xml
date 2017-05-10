@@ -12,7 +12,7 @@
             android:title="@string/title_filter" />
         <item
             android:id="@+id/nav_logout"
-            android:icon="@drawable/logout"
+            android:icon="@drawable/ic_sair_menu"
             android:title="Sair" />
         <item
             android:visible="false"
