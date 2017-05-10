@@ -270,12 +270,15 @@ public class MainActivity extends AppCompatActivity
             return true;
         }else if(id == R.id.action_filtrar){
 
-            Intent intent = new Intent(MainActivity.this,
-                    FiltroActivity.class);
+            Intent intent = new Intent(MainActivity.this, FiltroActivity.class);
             intent.putExtra("USER", user);
             startActivityForResult(intent,ACTIVITY_FILTRO_CODE);
 
             return true;
+        }else if(id == R.id.action_todas){
+            tValor = 0.0;
+            tData = "";
+            updateNotas();
         }
         return super.onOptionsItemSelected(item);
     }
