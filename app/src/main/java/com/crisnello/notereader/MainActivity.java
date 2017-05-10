@@ -49,11 +49,11 @@ public class MainActivity extends AppCompatActivity
     private ListView listaDeNotas;
     private AdapterListView adapterListView;
     private ArrayList<Nota> itens;
-    //----------------
+    //----------------Filter
     private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     private double tValor;
     private String tData;
-
+    private boolean doisFiltros;
     //-----------------
     private String format;
     private String contents;
@@ -66,6 +66,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        doisFiltros = false;
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -98,10 +101,24 @@ public class MainActivity extends AppCompatActivity
         tValor = getIntent().getDoubleExtra("VALOR",0.0);
         tData  = getIntent().getStringExtra("DATA");
 
+        if(tValor > 0.0 && tData != null && !tData.isEmpty())
+            doisFiltros = true;
+
+        //Log.e("MainActivity","onCreate - tValor "+tValor+" tData "+tData);
+
         updateNotas();
 
 
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        tValor = getIntent().getDoubleExtra("VALOR",0.0);
+        tData  = getIntent().getStringExtra("DATA");
+        Log.e("MainActivity","onResume - tValor "+tValor+" tData "+tData);
     }
 
 
@@ -121,8 +138,14 @@ public class MainActivity extends AppCompatActivity
                         ArrayList<Nota> tNotas = new ArrayList<Nota>();
                         for (Nota n : itens) {
                             String strDataEmissao = sdf.format(n.getDataEmissao());
-                            if (n.getValor() == tValor || strDataEmissao.equals(tData)) {
-                                tNotas.add(n);
+                            if(doisFiltros){
+                                if (n.getValor() == tValor && strDataEmissao.equals(tData)) {
+                                    tNotas.add(n);
+                                }
+                            }else {
+                                if (n.getValor() == tValor || strDataEmissao.equals(tData)) {
+                                    tNotas.add(n);
+                                }
                             }
                         }
                         itens = tNotas;
@@ -186,7 +209,7 @@ public class MainActivity extends AppCompatActivity
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if(result != null) {
             if(result.getContents() == null) {
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Cancelado", Toast.LENGTH_LONG).show();
             } else {
                 String strConteudo = result.getContents();
                 //CAMPOS OBRIGATORIOS
@@ -198,7 +221,7 @@ public class MainActivity extends AppCompatActivity
                     (new Util(MainActivity.this)).showAlert("O conteúdo deste QR_CODE não é de uma NFC-e válida");
                 }else {
 
-                    Toast.makeText(this, "Scanned: " + strConteudo, Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Conteúdo: " + strConteudo, Toast.LENGTH_LONG).show();
                     if (!ConexaoInternet.verificaConexao(getApplicationContext())) {
                         (new Util(MainActivity.this)).showAlert("Você não está conectado na internet, efetue a conexão e leia novamente essa nota!");
                     } else {
@@ -235,8 +258,7 @@ public class MainActivity extends AppCompatActivity
             updateNotas();
         } else if (requestCode == ACTIVITY_FILTRO_CODE){
 
-//            tValor = getIntent().getDoubleExtra("VALOR",0.0);
-//            Log.e("onActivityResult","resultCode "+resultCode+" tValor Recebe :"+tValor);
+            Log.e("onActivityResult","resultCode "+resultCode);
 
         }
 
@@ -270,9 +292,7 @@ public class MainActivity extends AppCompatActivity
             return true;
         }else if(id == R.id.action_filtrar){
 
-            Intent intent = new Intent(MainActivity.this, FiltroActivity.class);
-            intent.putExtra("USER", user);
-            startActivityForResult(intent,ACTIVITY_FILTRO_CODE);
+            chamaFiltroActivity();
 
             return true;
         }else if(id == R.id.action_todas){
@@ -281,6 +301,13 @@ public class MainActivity extends AppCompatActivity
             updateNotas();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void chamaFiltroActivity(){
+
+        Intent intent = new Intent(MainActivity.this, FiltroActivity.class);
+        intent.putExtra("USER", user);
+        startActivityForResult(intent,ACTIVITY_FILTRO_CODE);
     }
 
     public void sair(){
@@ -296,13 +323,16 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_sair) {
+        if (id == R.id.nav_logout) {
             //finish();
             PreferencesUtil.removePref(PreferencesUtil.NOME, getApplicationContext());
             PreferencesUtil.removePref(PreferencesUtil.EMAIL, getApplicationContext());
             PreferencesUtil.removePref(PreferencesUtil.ID, getApplicationContext());
             sair();
-        } else if (id == R.id.nav_gallery) {
+        }else if(id == R.id.nav_filter){
+            chamaFiltroActivity();
+        }
+        else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
 

@@ -80,6 +80,7 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auto_login);
 
+        //Log.e("AutoLoginActivity","onCreate");
 
 //        try {
 //            PackageInfo info = getPackageManager().getPackageInfo("com.crisnello.notereader", PackageManager.GET_SIGNATURES);

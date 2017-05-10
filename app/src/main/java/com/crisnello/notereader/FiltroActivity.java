@@ -92,8 +92,8 @@ public class FiltroActivity extends AppCompatActivity {
                 intent.putExtra("USER", (Usuario) getIntent().getSerializableExtra("USER"));
 
                 startActivity(intent);
-                finish();
 
+                //finish();
 
             }
         });
