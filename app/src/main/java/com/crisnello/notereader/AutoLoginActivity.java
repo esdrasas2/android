@@ -435,8 +435,17 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
             showProgress(false);
 
             if (success) {
+                try {
+                    mPasswordView.setVisibility(View.GONE);
+                    mSignInButton.setVisibility(View.GONE);
+                    mFacebookButton.setVisibility(View.GONE);
 
+                    btnHome.setVisibility(View.VISIBLE);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
                 goToMenu();
+
 
             } else {
                 if(!isConnected()){
