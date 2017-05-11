@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/com_facebook_button_like_background"
+    android:background="@color/com_facebook_blue"
     android:orientation="vertical">
 
     <ImageView
@@ -10,15 +10,15 @@
         android:layout_height="159dp"
         android:layout_gravity="center"
         android:layout_marginTop="150dp"
-        android:src="@drawable/icone" />
+        android:src="@drawable/ic_qr_code" />
 
     <TextView
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Bem Vindo!"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="30dp" />
+        android:textSize="30dp"
+        android:visibility="gone" />
 
 </LinearLayout>

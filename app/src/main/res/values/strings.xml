@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">Note Reader</string>
 
-    <string name="title_filter">Consultar Notas</string>
+    <string name="title_filter">Pesquisar Notas</string>
     <string name="info_notas">Detalhes clicando na nota</string>
-    <string name="title_home">Menu Inicial</string>
+    <string name="title_home">Home</string>
 
 
     <string name="prompt_email">Login</string>
@@ -22,7 +22,7 @@
 
     <string name="action_settings">Configurações</string>
 
-    <string name="action_filter">Filtrar</string>
+    <string name="action_filter">Pesquisar</string>
     <string name="action_todas">Todas as Notas</string>
 
 

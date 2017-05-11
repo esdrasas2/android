@@ -111,11 +111,6 @@ public class MainActivity extends AppCompatActivity
 
         updateNotas();
 
-        if (getIntent().getBooleanExtra("ADD", false)) {
-            //fab.performClick();
-            scanQR(null);
-        }
-
 
     }
 
@@ -160,6 +155,12 @@ public class MainActivity extends AppCompatActivity
                         }
                         itens = tNotas;
                     }
+                    if(itens.size() <= 0){
+                        Nota pNota = new Nota();
+                        pNota.setCnpj("");
+                        pNota.setNumeroFiscalCoo("");
+                        itens.add(pNota);
+                    }
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -196,9 +197,13 @@ public class MainActivity extends AppCompatActivity
     {
         Nota item = adapterListView.getItem(arg2);
 
-        Intent myWebLink = new Intent(android.content.Intent.ACTION_VIEW);
-        myWebLink.setData(Uri.parse(item.getNumeroFiscalCoo()));
-        startActivityForResult(myWebLink,ACTIVITY_REQUEST_CODE);
+        if(item.getCnpj().equals("")){
+            scanQR(arg1);
+        }else{
+            Intent myWebLink = new Intent(android.content.Intent.ACTION_VIEW);
+            myWebLink.setData(Uri.parse(item.getNumeroFiscalCoo()));
+            startActivityForResult(myWebLink,ACTIVITY_REQUEST_CODE);
+        }
     }
 
 
@@ -252,7 +257,8 @@ public class MainActivity extends AppCompatActivity
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            ((BaseAdapter) listaDeNotas.getAdapter()).notifyDataSetChanged();
+                                            //((BaseAdapter) listaDeNotas.getAdapter()).notifyDataSetChanged();
+                                            createListView();
                                         }
                                     });
                                 } catch (Exception e) {
@@ -282,7 +288,9 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
            //super.onBackPressed();
-           sair();
+           //sair();
+            chamaMenuActivity();
+
         }
     }
 
@@ -366,7 +374,7 @@ public class MainActivity extends AppCompatActivity
                 compartilha.setType("text/plain");
                 compartilha.putExtra(Intent.EXTRA_SUBJECT, "Install Note Reader");
                 compartilha.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=com.crisnello.notereader");
-                startActivity(Intent.createChooser(compartilha, "install Note Reader"));
+                startActivity(Intent.createChooser(compartilha, "Install Note Reader"));
             }
         } else if (id == R.id.nav_send) {
 
