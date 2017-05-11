@@ -1,5 +1,6 @@
 package com.crisnello.notereader;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,12 +12,15 @@ import com.crisnello.notereader.entitie.Usuario;
 import com.crisnello.notereader.util.ConexaoInternet;
 import com.crisnello.notereader.util.PreferencesUtil;
 import com.crisnello.notereader.util.Util;
+import com.google.zxing.integration.android.IntentIntegrator;
 
 public class MenuActivity extends AppCompatActivity {
 
     private Usuario user;
-    private ImageView iv_notas, iv_filter, iv_share, iv_sair;
+    private ImageView iv_notas, iv_filter, iv_share, iv_sair, iv_add_nota;
     public static final int ACTIVITY_REQUEST_CODE = 1;
+
+    private Activity mainActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +28,27 @@ public class MenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_menu);
 
         user = (Usuario) getIntent().getSerializableExtra("USER");
+
+        iv_add_nota = (ImageView) findViewById(R.id.iv_add_nota);
+        iv_add_nota.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Intent intent = new Intent(MenuActivity.this, MainActivity.class);
+                            intent.putExtra("USER", user);
+                            intent.putExtra("SCAN", true);
+                            startActivity(intent);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+                finish();
+            }
+        });
 
         iv_share = (ImageView) findViewById(R.id.iv_share);
         iv_share.setOnClickListener(new View.OnClickListener() {

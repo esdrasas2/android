@@ -65,11 +65,15 @@ public class MainActivity extends AppCompatActivity
     public static final int ACTIVITY_FILTRO_CODE = 2;
     public static final int ACTIVITY_MENU_CODE = 3;
 
+    private View mainView;
+    private boolean startScan;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        startScan = false;
         doisFiltros = false;
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -80,6 +84,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 scanQR(view);
+                mainView = view;
             }
         });
 
@@ -117,13 +122,19 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        String strScan = "false";
 
-//        tValor = getIntent().getDoubleExtra("VALOR",0.0);
-//        tData  = getIntent().getStringExtra("DATA");
-//        Log.e("MainActivity","onResume - tValor "+tValor+" tData "+tData);
+        if(!startScan) {
+            startScan = getIntent().getBooleanExtra("SCAN", false);
+            if (startScan) {
+                scanQR(mainView);
+                strScan = "true";
+            }
+        }else{
+            startScan = false;
+        }
 
-
-
+        Log.e("MainActivity","onResume - SCAN "+strScan);
     }
 
 
@@ -223,6 +234,7 @@ public class MainActivity extends AppCompatActivity
         //Log.e("onActivityResult","requestCode :"+requestCode);
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if(result != null) {
+
             if(result.getContents() == null) {
                 Toast.makeText(this, "Cancelado", Toast.LENGTH_LONG).show();
             } else {
