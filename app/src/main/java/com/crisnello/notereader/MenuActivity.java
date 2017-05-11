@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.crisnello.notereader.entitie.Usuario;
 import com.crisnello.notereader.util.ConexaoInternet;
@@ -20,6 +21,9 @@ public class MenuActivity extends AppCompatActivity {
     private ImageView iv_notas, iv_filter, iv_share, iv_sair, iv_add_nota;
     public static final int ACTIVITY_REQUEST_CODE = 1;
 
+    private TextView txt_msg;
+
+
     private Activity mainActivity;
 
     @Override
@@ -28,6 +32,14 @@ public class MenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_menu);
 
         user = (Usuario) getIntent().getSerializableExtra("USER");
+        String strMsg  = getIntent().getStringExtra("MSG");
+
+        txt_msg = (TextView) findViewById(R.id.txt_msg);
+        if(strMsg != null && !strMsg.isEmpty()){
+            txt_msg.setText(strMsg);
+        }else{
+            txt_msg.setText("Usuário "+user.getEmail()+" Logado");
+        }
 
         iv_add_nota = (ImageView) findViewById(R.id.iv_add_nota);
         iv_add_nota.setOnClickListener(new View.OnClickListener() {
