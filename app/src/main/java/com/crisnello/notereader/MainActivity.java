@@ -258,29 +258,24 @@ public class MainActivity extends AppCompatActivity
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                HashMap<String, String> hash = new HashMap<String, String>();
-                                hash.put("id_usuario", String.valueOf(user.getId()));
-                                hash.put("str_qr_code", contents);
-                                String respJson = Internet.postHttp(Config.WS_URL_NOTA, hash);
-                                //Log.i("Result .postHttp",respJson);
                                 try {
-                                    Nota notaInserida = new Gson().fromJson(respJson, Nota.class);
-                                    itens.add(notaInserida);
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            try{
-                                                createListView();
-                                            }catch(Exception e){}
+                                    HashMap<String, String> hash = new HashMap<String, String>();
+                                    hash.put("id_usuario", String.valueOf(user.getId()));
+                                    hash.put("str_qr_code", contents);
+                                    String respJson = Internet.postHttp(Config.WS_URL_NOTA, hash);
+                                    //Log.i("Result .postHttp",respJson);
 
-                                            try{
-                                                ((BaseAdapter) listaDeNotas.getAdapter()).notifyDataSetChanged();
-                                            }catch(Exception e){}
+                                        Nota notaInserida = new Gson().fromJson(respJson, Nota.class);
+                                        itens.add(notaInserida);
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                updateNotas();
 
-                                        }
-                                    });
+                                            }
+                                        });
                                 } catch (Exception e) {
-                                    updateNotas();
+                                    (new Util(getApplicationContext())).showToast("Problema ao adicionar nota contate o criador crisnello@crisnello.com");
                                 }
                             }
                         }).start();
