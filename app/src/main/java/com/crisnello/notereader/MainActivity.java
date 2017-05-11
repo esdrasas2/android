@@ -269,8 +269,14 @@ public class MainActivity extends AppCompatActivity
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            //((BaseAdapter) listaDeNotas.getAdapter()).notifyDataSetChanged();
-                                            createListView();
+                                            try{
+                                                createListView();
+                                            }catch(Exception e){}
+
+                                            try{
+                                                ((BaseAdapter) listaDeNotas.getAdapter()).notifyDataSetChanged();
+                                            }catch(Exception e){}
+
                                         }
                                     });
                                 } catch (Exception e) {
