@@ -86,6 +86,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="100dp"
 
+        android:layout_marginRight="21dp"
         android:textAlignment="center"
         android:textColor="#fff" />
 
