@@ -63,6 +63,7 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
 
     private boolean Connected = true;
 
+    private Button btnHome, mSignInButton, mFacebookButton;
 
     public boolean isConnected() {
         return Connected;
@@ -136,7 +137,16 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
             }
         });
 
-        Button mFacebookButton = (Button) findViewById(R.id.facebook_button);
+        btnHome = (Button) findViewById(R.id.btn_home);
+        btnHome.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToMenu();
+            }
+        });
+
+
+        mFacebookButton = (Button) findViewById(R.id.facebook_button);
         mFacebookButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -147,7 +157,7 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
 
-        Button mSignInButton = (Button) findViewById(R.id.sign_in_button);
+        mSignInButton = (Button) findViewById(R.id.sign_in_button);
         mSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -235,7 +245,11 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
                                                 (new Util(AutoLoginActivity.this)).showAlert("Não foi possível logar/adicionar usuário no servidor do bancodenotas. \n contato: crisnello@crisnello.com");
                                             } else {
                                                 mPasswordView.setVisibility(View.GONE);
+                                                mSignInButton.setVisibility(View.GONE);
+                                                mFacebookButton.setVisibility(View.GONE);
+
                                                 mEmailView.setText(user.getEmail());
+                                                btnHome.setVisibility(View.VISIBLE);
                                                 goToMenu();
                                             }
                                         }
@@ -342,7 +356,7 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
     public void goToMenu(){
 
         if(user == null || user.getId() == -1){
-            (new Util(AutoLoginActivity.this)).showAlert("Usuario nao encontrado. Obs: goToApp()");
+            (new Util(AutoLoginActivity.this)).showAlert("Usuario nao encontrado. Obs: AutoLogin - goToMenu");
         }else {
             try {
                 (new Util(getApplicationContext())).showToast("Seja bem vindo " + user.getNome());
