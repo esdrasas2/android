@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity
                 // cIdToken=000001
 
                 if(!strConteudo.contains("chNFe") || !strConteudo.contains("tpAmb") || !strConteudo.contains("cIdToken")){
-                    (new Util(MainActivity.this)).showAlert("O conteúdo deste QR_CODE não é de uma NFC-e válida");
+                    (new Util(MainActivity.this)).showAlert("O conteúdo deste QR_CODE não é de uma NFC-e do Paraná válida");
                 }else {
 
                     Toast.makeText(this, "Conteúdo: " + strConteudo, Toast.LENGTH_LONG).show();
