@@ -53,6 +53,7 @@
             android:value="@string/facebook_app_id" />
 
         <activity android:name=".MenuActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_home"></activity>
     </application>
 
