@@ -236,7 +236,7 @@ public class MainActivity extends AppCompatActivity
         if(result != null) {
 
             if(result.getContents() == null) {
-                Toast.makeText(this, "Cancelado", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Clique novamente para sair", Toast.LENGTH_LONG).show();
             } else {
                 String strConteudo = result.getContents();
                 //CAMPOS OBRIGATORIOS
