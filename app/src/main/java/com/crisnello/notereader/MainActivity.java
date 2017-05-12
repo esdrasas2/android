@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        startScan = false;
+
         doisFiltros = false;
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -117,6 +117,14 @@ public class MainActivity extends AppCompatActivity
         updateNotas();
 
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(!startScan)
+            startScan = false;
+        Log.e("MainActivity","onStart - SCAN is true");
     }
 
     @Override
