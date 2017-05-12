@@ -122,9 +122,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        if(!startScan)
+        String strStartScan;
+        if(!startScan) {
             startScan = false;
-        Log.e("MainActivity","onStart - SCAN is true");
+            strStartScan = "false";
+        }else{
+            strStartScan = "true";
+        }
+
+       // Log.e("MainActivity","onStart - SCAN is "+strStartScan);
     }
 
     @Override
@@ -134,6 +140,8 @@ public class MainActivity extends AppCompatActivity
 
         if(!startScan) {
             startScan = getIntent().getBooleanExtra("SCAN", false);
+            getIntent().addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            getIntent().putExtra("SCAN",false);
             if (startScan) {
                 scanQR(mainView);
                 strScan = "true";
@@ -142,7 +150,7 @@ public class MainActivity extends AppCompatActivity
             startScan = false;
         }
 
-        Log.e("MainActivity","onResume - SCAN "+strScan);
+        //Log.e("MainActivity","onResume - SCAN "+strScan);
     }
 
 
