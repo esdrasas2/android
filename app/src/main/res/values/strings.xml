@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Note Reader</string>
+    <string name="app_name">NF-e Reader</string>
 
     <string name="title_filter">Pesquisar Notas</string>
     <string name="info_notas">Detalhes clicando na nota</string>

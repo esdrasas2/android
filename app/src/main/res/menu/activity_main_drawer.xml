@@ -13,7 +13,7 @@
         <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/ic_sair_menu"
-            android:title="Sair" />
+            android:title="Sair e Fechar" />
         <item
             android:visible="false"
             android:id="@+id/nav_gallery"
