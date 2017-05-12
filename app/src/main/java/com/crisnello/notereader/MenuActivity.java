@@ -17,12 +17,12 @@ import com.google.zxing.integration.android.IntentIntegrator;
 
 public class MenuActivity extends AppCompatActivity {
 
+    private String faceId;
     private Usuario user;
     private ImageView iv_notas, iv_filter, iv_share, iv_sair, iv_add_nota;
     public static final int ACTIVITY_REQUEST_CODE = 1;
 
     private TextView txt_msg;
-
 
     private Activity mainActivity;
 
@@ -33,6 +33,7 @@ public class MenuActivity extends AppCompatActivity {
 
         user = (Usuario) getIntent().getSerializableExtra("USER");
         String strMsg  = getIntent().getStringExtra("MSG");
+        faceId = getIntent().getStringExtra("FACEID");
 
         txt_msg = (TextView) findViewById(R.id.txt_msg);
         if(strMsg != null && !strMsg.isEmpty()){
@@ -52,6 +53,7 @@ public class MenuActivity extends AppCompatActivity {
                             Intent intent = new Intent(MenuActivity.this, MainActivity.class);
                             intent.putExtra("USER", user);
                             intent.putExtra("SCAN", true);
+                            intent.putExtra("FACEID", faceId);
                             startActivity(intent);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -84,6 +86,7 @@ public class MenuActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MenuActivity.this, FiltroActivity.class);
                 intent.putExtra("USER", user);
+                intent.putExtra("FACEID", faceId);
                 startActivity(intent);
             }
         });
@@ -122,6 +125,7 @@ public class MenuActivity extends AppCompatActivity {
                 PreferencesUtil.putPref(PreferencesUtil.EMAIL, user.getEmail(), getApplicationContext());
                 Intent intent = new Intent(MenuActivity.this, MainActivity.class);
                 intent.putExtra("USER", user);
+                intent.putExtra("FACEID", faceId);
                 startActivityForResult(intent, ACTIVITY_REQUEST_CODE);
             } catch (Exception e) {
                 e.printStackTrace();

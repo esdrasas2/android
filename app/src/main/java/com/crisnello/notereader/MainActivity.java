@@ -2,9 +2,12 @@ package com.crisnello.notereader;
 
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.NetworkOnMainThreadException;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,7 +38,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.loopj.android.image.SmartImageView;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +53,14 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener {
 
+    private Bitmap mIcon1;
+    private URL img_value ;
+    private ImageView userpicture;
+    //---------
+    private SmartImageView smartImage;
 
+
+    private TextView tv_login;
     private FloatingActionButton fab;
 
     private ListView listaDeNotas;
@@ -102,8 +117,24 @@ public class MainActivity extends AppCompatActivity
 
         user = (Usuario) getIntent().getSerializableExtra("USER");
         View navigationViewHeader = navigationView.getHeaderView(0);
-        TextView tv_login = (TextView) navigationViewHeader.findViewById(R.id.tv_login);
+        tv_login = (TextView) navigationViewHeader.findViewById(R.id.tv_login);
         tv_login.setText(user.getEmail());
+
+
+        smartImage = (SmartImageView) navigationViewHeader.findViewById(R.id.meuSmartImage);
+
+        String faceId = getIntent().getStringExtra("FACEID");
+        try {
+            //Log.e("MinActivity","onCreate USER_ID FACEBOOK "+faceId);
+            if(faceId != null && !faceId.isEmpty()) {
+                String fotoFaceURL = recuperaFotoPerfilFacebook(faceId);
+                smartImage.setImageUrl(fotoFaceURL);
+            }
+
+        } catch (MalformedURLException e) {
+
+            e.printStackTrace();
+        }
 
 
         tValor = getIntent().getDoubleExtra("VALOR",0.0);
@@ -117,6 +148,12 @@ public class MainActivity extends AppCompatActivity
         updateNotas();
 
 
+    }
+
+    private String recuperaFotoPerfilFacebook(String userID) throws MalformedURLException {
+        Uri.Builder builder = Uri.parse("https://graph.facebook.com").buildUpon();
+        builder.appendPath(userID).appendPath("picture").appendQueryParameter("type", "large");
+        return builder.toString();
     }
 
     @Override
@@ -150,7 +187,9 @@ public class MainActivity extends AppCompatActivity
             startScan = false;
         }
 
-        //Log.e("MainActivity","onResume - SCAN "+strScan);
+//        //Log.e("MainActivity","onResume - SCAN "+strScan);
+//        if(mIcon1 != null)
+//            userpicture.setImageBitmap(mIcon1);
     }
 
 

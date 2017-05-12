@@ -9,6 +9,7 @@ public class PreferencesUtil {
     public static final String ID = "id";
     public static final String NOME = "nome";
     public static final String EMAIL = "email";
+    public static final String FACEBOOKID = "facebookid";
 
     public static void putPref(String key, String value, Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);

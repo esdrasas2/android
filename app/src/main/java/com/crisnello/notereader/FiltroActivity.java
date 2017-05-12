@@ -90,6 +90,7 @@ public class FiltroActivity extends AppCompatActivity {
                 intent.putExtra("VALOR",pValor);
                 intent.putExtra("DATA",edt_data.getText().toString());
                 intent.putExtra("USER", (Usuario) getIntent().getSerializableExtra("USER"));
+                intent.putExtra("FACEID", getIntent().getStringExtra("FACEID"));
 
                 startActivity(intent);
 

@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.crisnello.notereader.config.Config;
@@ -42,12 +45,17 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.gson.Gson;
 
+import java.io.IOException;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.HashMap;
 import com.crisnello.notereader.util.Util;
 public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCallbacks<Cursor> {
+
+
+    private String facebookUserId;
 
     private LoginButton loginButton;
     private CallbackManager callbackManager;
@@ -173,6 +181,7 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
             long pId = PreferencesUtil.getPrefLong(PreferencesUtil.ID, getApplicationContext());
             String pNome = PreferencesUtil.getPref(PreferencesUtil.NOME, getApplicationContext());
             String pEmail = PreferencesUtil.getPref(PreferencesUtil.EMAIL, getApplicationContext());
+            String pFacebookId = PreferencesUtil.getPref(PreferencesUtil.FACEBOOKID, getApplicationContext());
 
            // Log.e("PreferencesUtil", "id :" + pId + " nome :" + pNome + " email :" + pEmail);
 
@@ -183,6 +192,7 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
                 user.setEmail(pEmail);
                 Intent intent = new Intent(AutoLoginActivity.this, MenuActivity.class);
                 intent.putExtra("USER", user);
+                intent.putExtra("FACEID", pFacebookId);
                 startActivityForResult(intent, ACTIVITY_REQUEST_CODE);
             }
         }
@@ -192,22 +202,6 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
 
         LoginManager.getInstance().logOut();
 
-//
-//        Session session = Session.getActiveSession();
-//        if (session != null) {
-//
-//            if (!session.isClosed()) {
-//                session.closeAndClearTokenInformation();
-//                //clear your preferences if saved
-//            }
-//        } else {
-//
-//            session = new Session(context);
-//            Session.setActiveSession(session);
-//
-//            session.closeAndClearTokenInformation();
-//            //clear your preferences if saved
-//        }
 
     }
 
@@ -226,6 +220,8 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
                 if(!ConexaoInternet.verificaConexao(getApplicationContext())){
                     (new Util(AutoLoginActivity.this)).showAlert("Você não está conectado na internet, efetue a conexão e tente novamente!");
                 }else {
+
+                    facebookUserId = userId;
 
                     new Thread(new Runnable() {
                         @Override
@@ -363,8 +359,10 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
                 PreferencesUtil.putPrefLong(PreferencesUtil.ID, user.getId(), getApplicationContext());
                 PreferencesUtil.putPref(PreferencesUtil.NOME, user.getNome(), getApplicationContext());
                 PreferencesUtil.putPref(PreferencesUtil.EMAIL, user.getEmail(), getApplicationContext());
+                PreferencesUtil.putPref(PreferencesUtil.FACEBOOKID, facebookUserId, getApplicationContext());
                 Intent intent = new Intent(AutoLoginActivity.this, MenuActivity.class);
                 intent.putExtra("USER", user);
+                intent.putExtra("FACEID", facebookUserId);
                 startActivityForResult(intent, ACTIVITY_REQUEST_CODE);
             } catch (Exception e) {
                 e.printStackTrace();

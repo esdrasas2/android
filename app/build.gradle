@@ -30,7 +30,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile files('libs/gson-2.8.0.jar')
-
     //compile 'com.android.support:appcompat-v7:23.1.0'   // Version 23+ is required
     compile 'org.apache.httpcomponents:httpcore:4.3'
     //noinspection GradleCompatible
@@ -40,4 +39,5 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     compile 'com.journeyapps:zxing-android-embedded:3.5.0'
     testCompile 'junit:junit:4.12'
+    compile files('libs/android-smart-image-view-1.0.0.jar')
 }
