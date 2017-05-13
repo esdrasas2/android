@@ -18,12 +18,12 @@
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_marginLeft="5sp"
-            android:background="@drawable/button_blue"
+            android:background="@drawable/button"
             android:gravity="center_vertical"
             android:padding="6dp"
             android:paddingTop="15dp"
-            android:textColor="@color/white"
-            android:textColorLink="@color/white"
+            android:textColor="@color/blue_light"
+            android:textColorLink="@color/blue_light"
             android:textSize="13sp" />
     </LinearLayout>
 </LinearLayout>

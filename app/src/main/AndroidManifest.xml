@@ -26,6 +26,7 @@
         </activity>
         <activity
             android:name=".AutoLoginActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:label="Login" />
         <activity
             android:name=".MainActivity"
@@ -33,6 +34,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".FiltroActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/title_filter"
             />
         <activity
@@ -53,6 +55,7 @@
             android:value="@string/facebook_app_id" />
 
         <activity android:name=".MenuActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait"
             android:label="@string/title_home"></activity>
     </application>

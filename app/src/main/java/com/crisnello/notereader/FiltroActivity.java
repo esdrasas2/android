@@ -2,6 +2,8 @@ package com.crisnello.notereader;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -20,6 +22,10 @@ public class FiltroActivity extends AppCompatActivity {
     private TextView txt_msg_data;
     private EditText edt_valor, edt_data;
     private int year, month, day;
+
+    private Usuario user;
+    private String facebookUserId;
+
     DatePickerDialog.OnDateSetListener ondate = new DatePickerDialog.OnDateSetListener() {
 
         public void onDateSet(DatePicker view, int theYear, int monthOfYear,
@@ -39,6 +45,14 @@ public class FiltroActivity extends AppCompatActivity {
 
         datepicker.show();
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(FiltroActivity.this, MenuActivity.class);
+        intent.putExtra("USER", user);
+        intent.putExtra("FACEID", facebookUserId);
+        startActivity(intent);
     }
 
     @Override
@@ -75,6 +89,9 @@ public class FiltroActivity extends AppCompatActivity {
             }
         });
 
+        user = (Usuario) getIntent().getSerializableExtra("USER");
+        facebookUserId =  getIntent().getStringExtra("FACEID");
+
         edt_valor = (EditText) findViewById(R.id.edt_valor);
         Button buscar = (Button) findViewById(R.id.btn_buscar);
         buscar.setOnClickListener(new View.OnClickListener() {
@@ -89,8 +106,8 @@ public class FiltroActivity extends AppCompatActivity {
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("VALOR",pValor);
                 intent.putExtra("DATA",edt_data.getText().toString());
-                intent.putExtra("USER", (Usuario) getIntent().getSerializableExtra("USER"));
-                intent.putExtra("FACEID", getIntent().getStringExtra("FACEID"));
+                intent.putExtra("USER", user);
+                intent.putExtra("FACEID",facebookUserId);
 
                 startActivity(intent);
 

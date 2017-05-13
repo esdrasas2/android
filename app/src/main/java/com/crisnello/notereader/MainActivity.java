@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity
     private ImageView userpicture;
     //---------
     private SmartImageView smartImage;
-
+    private String faceId;
 
     private TextView tv_login;
     private FloatingActionButton fab;
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity
 
         smartImage = (SmartImageView) navigationViewHeader.findViewById(R.id.meuSmartImage);
 
-        String faceId = getIntent().getStringExtra("FACEID");
+        faceId = getIntent().getStringExtra("FACEID");
         try {
             //Log.e("MinActivity","onCreate USER_ID FACEBOOK "+faceId);
             if(faceId != null && !faceId.isEmpty()) {
@@ -393,6 +393,7 @@ public class MainActivity extends AppCompatActivity
 
         Intent intent = new Intent(MainActivity.this, FiltroActivity.class);
         intent.putExtra("USER", user);
+        intent.putExtra("FACEID", faceId);
         startActivityForResult(intent,ACTIVITY_FILTRO_CODE);
     }
 
@@ -400,6 +401,7 @@ public class MainActivity extends AppCompatActivity
 
         Intent intent = new Intent(MainActivity.this, MenuActivity.class);
         intent.putExtra("USER", user);
+        intent.putExtra("FACEID", faceId);
         startActivityForResult(intent,ACTIVITY_MENU_CODE);
     }
 
@@ -421,6 +423,7 @@ public class MainActivity extends AppCompatActivity
             PreferencesUtil.removePref(PreferencesUtil.NOME, getApplicationContext());
             PreferencesUtil.removePref(PreferencesUtil.EMAIL, getApplicationContext());
             PreferencesUtil.removePref(PreferencesUtil.ID, getApplicationContext());
+            PreferencesUtil.removePref(PreferencesUtil.FACEBOOKID, getApplicationContext());
             sair();
         }else if(id == R.id.nav_filter){
             chamaFiltroActivity();
