@@ -444,7 +444,7 @@ public class MainActivity extends AppCompatActivity
                 Intent compartilha = new Intent(Intent.ACTION_SEND);
                 compartilha.setType("text/plain");
                 compartilha.putExtra(Intent.EXTRA_SUBJECT, "Install NF-e Reader");
-                compartilha.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=com.crisnello.notereader");
+                compartilha.putExtra(Intent.EXTRA_TEXT, "http://nfereader.crisnello.com");
                 startActivity(Intent.createChooser(compartilha, "Install NF-e Reader"));
             }
         } else if (id == R.id.nav_send) {
