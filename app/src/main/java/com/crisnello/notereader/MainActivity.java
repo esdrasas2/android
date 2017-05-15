@@ -303,7 +303,8 @@ public class MainActivity extends AppCompatActivity
                     (new Util(MainActivity.this)).showAlert("O conteúdo deste QR_CODE não é de uma NFC-e do Paraná válida");
                 }else {
 
-                    Toast.makeText(this, "Conteúdo: " + strConteudo, Toast.LENGTH_LONG).show();
+                    (new Util(MainActivity.this)).showToast( "Conteúdo: " + strConteudo);
+
                     if (!ConexaoInternet.verificaConexao(getApplicationContext())) {
                         (new Util(MainActivity.this)).showAlert("Você não está conectado na internet, efetue a conexão e leia novamente essa nota!");
                     } else {
