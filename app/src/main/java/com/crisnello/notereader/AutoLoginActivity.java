@@ -64,7 +64,7 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
     public static final int ACTIVITY_REQUEST_CODE = 1;
     private UserLoginTask mAuthTask = null;
 
-    private AutoCompleteTextView mEmailView;
+    private EditText mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
@@ -162,7 +162,7 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
             }
         });
 
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mEmailView = (EditText) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
 
         mSignInButton = (Button) findViewById(R.id.sign_in_button);

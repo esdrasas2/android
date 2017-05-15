@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity
 //        new IntentIntegrator(this).initiateScan();
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
-        integrator.setPrompt("QR_CODE de uma NFC-e");
+        integrator.setPrompt("QR_CODE de uma NF-e");
 //        integrator.setCameraId(0);  // Use a specific camera of the device
         integrator.setBeepEnabled(true);
         integrator.setBarcodeImageEnabled(true);

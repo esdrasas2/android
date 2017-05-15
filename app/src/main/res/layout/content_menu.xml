@@ -1,15 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/click"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.crisnello.notereader.MenuActivity"
-    tools:showIn="@layout/app_bar_main_menu"
-    android:orientation="vertical"
-    android:weightSum="1">-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -24,10 +13,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="30dp"
-        android:background="@color/com_facebook_blue"
+        android:layout_marginTop="20dp"
+        android:background="@color/com_facebook_button_login_background_color"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -35,32 +24,52 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
+
             <com.loopj.android.image.SmartImageView
                 android:id="@+id/meuSmartImage"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:paddingRight="10dp"/>
+
+            <Button
+                android:id="@+id/btn_iv_notas"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@drawable/button_blue"
+                android:paddingLeft="15dp"
+
+                android:paddingRight="15dp"
+                android:text="Minhas Notas"
+                android:textAllCaps="false"
+                android:textColor="@color/cardview_light_background"
+                android:textColorLink="@color/cardview_light_background"
+                android:textSize="16dp" />
+
+
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/txt_msg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="1"
-
-            android:paddingTop="10dp"
-            android:textColor="@color/white"
-            android:visibility="visible" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/txt_msg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="20dp"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:visibility="visible" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="30dp"
         android:orientation="horizontal">
-
-
 
 
         <Button
@@ -78,13 +87,12 @@
             android:textSize="16dp" />
 
 
-
         <Button
             android:id="@+id/btn_iv_filter"
             style="?android:textAppearanceSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
+            android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:background="@drawable/button_blue"
             android:padding="16dp"
@@ -97,52 +105,7 @@
 
     </LinearLayout>
 
-    <!--    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
 
-            android:orientation="vertical">
-
-
-            <Button
-                android:id="@+id/btn_add_nota"
-                style="?android:textAppearanceSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="30dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/button_blue"
-                android:padding="16dp"
-                android:text="Adicionar Nota"
-                android:textAllCaps="false"
-                android:textColor="@color/cardview_light_background"
-                android:textColorLink="@color/cardview_light_background"
-                android:textSize="16dp" />
-
-            <Button
-                android:id="@+id/btn_iv_filter"
-                style="?android:textAppearanceSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="30dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/button_blue"
-                android:padding="16dp"
-                android:text="Pesquisar Nota"
-                android:textAllCaps="false"
-                android:textColor="@color/cardview_light_background"
-                android:textColorLink="@color/cardview_light_background"
-                android:textSize="16dp" />
-
-
-        </LinearLayout>-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -151,23 +114,7 @@
         android:orientation="vertical">
 
 
-        <Button
-            android:id="@+id/btn_iv_notas"
-            style="?android:textAppearanceSmall"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginBottom="30dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/button_blue"
-            android:padding="16dp"
-            android:text="Minhas Notas"
-            android:textAllCaps="false"
-            android:textColor="@color/cardview_light_background"
-            android:textColorLink="@color/cardview_light_background"
-            android:textSize="16dp" />
+
 
         <Button
             android:id="@+id/btn_iv_share"
@@ -177,8 +124,7 @@
             android:layout_gravity="center"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
-            android:layout_marginTop="60dp"
-            android:background="@drawable/button"
+            android:layout_marginTop="20dp"
             android:padding="16dp"
             android:text="Compartilhar"
             android:textAllCaps="false"
@@ -189,45 +135,6 @@
 
     </LinearLayout>
 
-    <!--    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="horizontal">
 
-
-        <ImageView
-            android:id="@+id/iv_sair"
-            android:layout_width="137dp"
-            android:layout_height="134dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp"
-            android:layout_marginTop="10dp"
-            android:layout_weight="1"
-            android:paddingBottom="10dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="10dp"
-            app:srcCompat="@drawable/power_logout" />
-    </LinearLayout>-->
-
-
-    <!--    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/txt_fechar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="Fechar APP" />
-
-
-    </LinearLayout>-->
 
 </LinearLayout>

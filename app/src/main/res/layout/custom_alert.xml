@@ -70,7 +70,7 @@
                 android:layout_height="40dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/btn_red"
+                android:background="@drawable/button_blue"
                 android:id="@+id/btn2"
                 android:layout_marginLeft="10dp"
                 android:visibility="gone">
@@ -95,7 +95,7 @@
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:id="@+id/imageView54"
-        android:src="@drawable/exclamation"
+
         android:adjustViewBounds="true"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
