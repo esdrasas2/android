@@ -331,7 +331,13 @@ public class MainActivity extends AppCompatActivity
                                             }
                                         });
                                 } catch (Exception e) {
-                                    (new Util(getApplicationContext())).showToast("Problema ao adicionar nota contate o criador crisnello@crisnello.com");
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            (new Util(MainActivity.this)).showToast("Clique em Todas as Notas para Atualizar a lista");
+                                        }
+                                    });
+
                                 }
                             }
                         }).start();
