@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity
             strStartScan = "true";
         }
 
-       // Log.e("MainActivity","onStart - SCAN is "+strStartScan);
+        // Log.e("MainActivity","onStart - SCAN is "+strStartScan);
     }
 
     @Override
@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity
                     if(itens.size() <= 0){
                         Nota pNota = new Nota();
                         pNota.setCnpj("");
-                        pNota.setNumeroFiscalCoo("");
+                        pNota.setNumeroFiscalCoo("Adicionar uma nota!");
                         itens.add(pNota);
                     }
                     runOnUiThread(new Runnable() {
@@ -321,15 +321,15 @@ public class MainActivity extends AppCompatActivity
                                     String respJson = Internet.postHttp(Config.WS_URL_NOTA, hash);
                                     //Log.i("Result .postHttp",respJson);
 
-                                        Nota notaInserida = new Gson().fromJson(respJson, Nota.class);
-                                        itens.add(notaInserida);
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                updateNotas();
+//                                    Nota notaInserida = new Gson().fromJson(respJson, Nota.class);
+//                                    itens.add(notaInserida);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            updateNotas();
 
-                                            }
-                                        });
+                                        }
+                                    });
                                 } catch (Exception e) {
                                     runOnUiThread(new Runnable() {
                                         @Override
@@ -362,8 +362,8 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-           //super.onBackPressed();
-           //sair();
+            //super.onBackPressed();
+            //sair();
             chamaMenuActivity();
 
         }

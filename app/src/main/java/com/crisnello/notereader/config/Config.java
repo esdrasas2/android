@@ -6,7 +6,7 @@ package com.crisnello.notereader.config;
         public static int WS_TIME_OUT = 15000;
         public final static String DB_NAME = "banco_de_notas.sqlite";
 
-        public final static String WS_SERVER_LOCAL = "http://172.17.6.56:8080";
+        //public final static String WS_SERVER_USADO = "http://172.17.6.56:8080";
         public final static String WS_SERVER_USADO = "http://177.71.246.197";
 
         public final static String WS_URL_LOGIN = WS_SERVER_USADO+"/bancodenotas/pages/home/api/login.jsf";
