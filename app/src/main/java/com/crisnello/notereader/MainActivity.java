@@ -3,11 +3,9 @@ package com.crisnello.notereader;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.NetworkOnMainThreadException;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,11 +14,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -31,24 +29,21 @@ import com.crisnello.notereader.entitie.Nota;
 import com.crisnello.notereader.entitie.Usuario;
 import com.crisnello.notereader.util.AdapterListView;
 import com.crisnello.notereader.util.ConexaoInternet;
-import com.crisnello.notereader.util.Util;
 import com.crisnello.notereader.util.Internet;
 import com.crisnello.notereader.util.PreferencesUtil;
+import com.crisnello.notereader.util.Util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.loopj.android.image.SmartImageView;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener {
@@ -79,6 +74,9 @@ public class MainActivity extends AppCompatActivity
     public static final int ACTIVITY_REQUEST_CODE = 1;
     public static final int ACTIVITY_FILTRO_CODE = 2;
     public static final int ACTIVITY_MENU_CODE = 3;
+
+    public static final int CONTEXT_MENU_VER = 1;
+    public static final int CONTEXT_MENU_ENVIAR = 2;
 
     private View mainView;
     private boolean startScan;
@@ -114,6 +112,16 @@ public class MainActivity extends AppCompatActivity
 
         listaDeNotas = (ListView) findViewById(R.id.lista);
         listaDeNotas.setOnItemClickListener(this);
+        listaDeNotas.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+            @Override
+            public void onCreateContextMenu(ContextMenu contextMenu, View view,
+                                            ContextMenu.ContextMenuInfo contextMenuInfo) {
+                contextMenu.add(Menu.NONE, CONTEXT_MENU_VER, Menu.NONE, "Ver");
+                contextMenu.add(Menu.NONE, CONTEXT_MENU_ENVIAR, Menu.NONE, "Enviar");
+            }
+        });
+
+
 
         user = (Usuario) getIntent().getSerializableExtra("USER");
         View navigationViewHeader = navigationView.getHeaderView(0);
@@ -148,6 +156,26 @@ public class MainActivity extends AppCompatActivity
         updateNotas();
 
 
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int position = menuInfo.position;
+        Nota itemNota = adapterListView.getItem(position);
+
+        //Log.e("MainActivity","onContextItemSelected MenuItem position "+position+" Nota "+itemNota.getId()+" CNPJ "+itemNota.getCnpj()+" Valor "+itemNota.getValor());
+
+        switch (item.getItemId()) {
+            case CONTEXT_MENU_ENVIAR:
+                compartilhar("Enviar Nota ",itemNota.getNumeroFiscalCoo());
+                break;
+            case CONTEXT_MENU_VER:
+                verNota(itemNota.getNumeroFiscalCoo());
+                break;
+        }
+        return super.onContextItemSelected(item);
     }
 
     private String recuperaFotoPerfilFacebook(String userID) throws MalformedURLException {
@@ -224,7 +252,7 @@ public class MainActivity extends AppCompatActivity
                     if(itens.size() <= 0){
                         Nota pNota = new Nota();
                         pNota.setCnpj("");
-                        pNota.setNumeroFiscalCoo("Adicionar uma nota!");
+                        pNota.setNumeroFiscalCoo(" Adicionar uma nota !");
                         itens.add(pNota);
                     }
                     runOnUiThread(new Runnable() {
@@ -258,6 +286,12 @@ public class MainActivity extends AppCompatActivity
         listaDeNotas.setCacheColorHint(Color.TRANSPARENT);
     }
 
+    public void verNota(String pUrlNota){
+        Intent myWebLink = new Intent(android.content.Intent.ACTION_VIEW);
+        myWebLink.setData(Uri.parse(pUrlNota));
+        startActivityForResult(myWebLink,ACTIVITY_REQUEST_CODE);
+    }
+
 
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
     {
@@ -265,7 +299,9 @@ public class MainActivity extends AppCompatActivity
 
         if(item.getCnpj().equals("")){
             scanQR(arg1);
-        }else{
+        }else if(item.getCnpj().trim().equals("relatorio")){
+            //tira o click quando setar string "relatorio" no CNPJ
+        } else{
             Intent myWebLink = new Intent(android.content.Intent.ACTION_VIEW);
             myWebLink.setData(Uri.parse(item.getNumeroFiscalCoo()));
             startActivityForResult(myWebLink,ACTIVITY_REQUEST_CODE);
@@ -448,11 +484,7 @@ public class MainActivity extends AppCompatActivity
             if(!ConexaoInternet.verificaConexao(getApplicationContext())){
                 (new Util(MainActivity.this)).showAlert("Você não está conectado na internet, efetue a conexão e tente compartilhar novamente!");
             }else {
-                Intent compartilha = new Intent(Intent.ACTION_SEND);
-                compartilha.setType("text/plain");
-                compartilha.putExtra(Intent.EXTRA_SUBJECT, "Install NF-e Reader");
-                compartilha.putExtra(Intent.EXTRA_TEXT, "http://nfereader.crisnello.com");
-                startActivity(Intent.createChooser(compartilha, "Install NF-e Reader"));
+               compartilhar("Install NF-e Reader","http://nfereader.crisnello.com");
             }
         } else if (id == R.id.nav_send) {
 
@@ -462,4 +494,13 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    public void compartilhar(String pAssunto, String pConteudo){
+        Intent compartilha = new Intent(Intent.ACTION_SEND);
+        compartilha.setType("text/plain");
+        compartilha.putExtra(Intent.EXTRA_SUBJECT, pAssunto);
+        compartilha.putExtra(Intent.EXTRA_TEXT, pConteudo);
+        startActivity(Intent.createChooser(compartilha, pAssunto));
+    }
+
 }
