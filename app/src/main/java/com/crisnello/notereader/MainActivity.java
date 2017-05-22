@@ -1,10 +1,14 @@
 package com.crisnello.notereader;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -81,11 +85,14 @@ public class MainActivity extends AppCompatActivity
     private View mainView;
     private boolean startScan;
 
+    private View mProgress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mProgress = findViewById(R.id.progress);
 
         doisFiltros = false;
 
@@ -158,6 +165,37 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            listaDeNotas.setVisibility(show ? View.GONE : View.VISIBLE);
+            listaDeNotas.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    listaDeNotas.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            mProgress.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgress.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgress.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgress.setVisibility(show ? View.VISIBLE : View.GONE);
+            listaDeNotas.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+    }
+
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
@@ -225,6 +263,14 @@ public class MainActivity extends AppCompatActivity
         new Thread(new Runnable() {
             @Override
             public void run() {
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showProgress(true);
+                    }
+                });
+
                 try {
                     HashMap<String, String> hash = new HashMap<String, String>();
                     hash.put("id_usuario", String.valueOf(user.getId()));
@@ -260,6 +306,7 @@ public class MainActivity extends AppCompatActivity
                         public void run() {
 
                             createListView();
+                            showProgress(false);
                         }
                     });
                 }catch(Exception e){
@@ -272,6 +319,14 @@ public class MainActivity extends AppCompatActivity
                             }else {
                                 Toast.makeText(getApplicationContext(), "Não foi possível carregar as notas cadastradas! ", Toast.LENGTH_LONG).show();
                             }
+                        }
+                    });
+                }finally {
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showProgress(false);
                         }
                     });
                 }
@@ -496,11 +551,26 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void compartilhar(String pAssunto, String pConteudo){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                showProgress(true);
+            }
+        });
+
         Intent compartilha = new Intent(Intent.ACTION_SEND);
         compartilha.setType("text/plain");
         compartilha.putExtra(Intent.EXTRA_SUBJECT, pAssunto);
         compartilha.putExtra(Intent.EXTRA_TEXT, pConteudo);
+
         startActivity(Intent.createChooser(compartilha, pAssunto));
+        
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                showProgress(false);
+            }
+        });
     }
 
 }
