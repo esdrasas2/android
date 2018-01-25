@@ -139,12 +139,12 @@
         ads:adUnitId="ca-app-pub-8704319073007954/5487006880"></com.google.android.gms.ads.AdView>
 
     <com.google.android.gms.ads.AdView
-        android:visibility="gone"
         android:id="@+id/ad_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
         ads:adSize="BANNER"
         ads:adUnitId="@string/banner_ad_unit_id" />
 
