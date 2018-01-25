@@ -28,4 +28,6 @@
 
     <string name="facebook_app_id">220647798426630</string>
     <string name="fb_login_protocol_scheme">fb220647798426630</string>
+
+    <string name="banner_ad_unit_id">ca-app-pub-8704319073007954/5487006880</string>
 </resources>

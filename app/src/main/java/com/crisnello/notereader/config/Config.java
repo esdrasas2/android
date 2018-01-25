@@ -17,5 +17,8 @@ package com.crisnello.notereader.config;
 
         //public final static String WS_FILE_PATH="system/file/";
 
+            public final static String ADMOB_APP_ID = "ca-app-pub-8704319073007954~8494480031";
+
+
     }
 
