@@ -7,8 +7,8 @@ android {
         applicationId "com.crisnello.notereader"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 36
-        versionName "1.2"
+        versionCode 37
+        versionName "1.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -22,6 +22,9 @@ android {
 repositories {
     mavenCentral()
     jcenter()
+    maven {
+        url 'https://maven.google.com/'
+    }
 }
 
 dependencies {
@@ -36,8 +39,10 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
+    compile 'com.facebook.android:facebook-android-sdk:4.27.0'
     compile 'com.journeyapps:zxing-android-embedded:3.5.0'
     testCompile 'junit:junit:4.12'
     compile files('libs/android-smart-image-view-1.0.0.jar')
+    compile 'com.google.android.gms:play-services-ads:11.8.0'
 }
+
