@@ -75,11 +75,13 @@ public class FiltroActivity extends AppCompatActivity {
         // get test ads on a physical device. e.g.
         // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
 
-        System.err.println(new AdRequest.Builder().addTestDevice("ABCDEF012345"));
+//        System.err.println(new AdRequest.Builder().addTestDevice("ABCDEF012345"));
 
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .build();
+//        AdRequest adRequest = new AdRequest.Builder()
+//                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+//                .build();
+
+        AdRequest adRequest = new AdRequest.Builder().build();
 
         // Start loading the ad in the background.
         mAdView.loadAd(adRequest);
