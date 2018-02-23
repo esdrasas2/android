@@ -23,17 +23,8 @@ import com.loopj.android.image.SmartImageView;
 
 import java.net.MalformedURLException;
 
-import com.google.android.gms.ads.reward.RewardItem;
-import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
-
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.reward.RewardedVideoAd;
-
-public class MenuActivity extends AppCompatActivity  implements RewardedVideoAdListener {
-
-    private RewardedVideoAd mRewardedVideoAd;
+public class MenuActivity extends AppCompatActivity  {
 
     private String faceId;
     private Usuario user;
@@ -50,12 +41,6 @@ public class MenuActivity extends AppCompatActivity  implements RewardedVideoAdL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        MobileAds.initialize(this, Config.ADMOB_APP_ID);
-
-        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
-        mRewardedVideoAd.setRewardedVideoAdListener(this);
-
-        loadRewardedVideoAd();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_menu);
         setSupportActionBar(toolbar);
@@ -138,33 +123,8 @@ public class MenuActivity extends AppCompatActivity  implements RewardedVideoAdL
             }
         });
 
-        if (mRewardedVideoAd.isLoaded()) {
-            mRewardedVideoAd.show();
-        }
     }
 
-    private void loadRewardedVideoAd() {
-        mRewardedVideoAd.loadAd("ca-app-pub-8704319073007954/7534585726",
-                new AdRequest.Builder().build());
-    }
-
-    @Override
-    public void onResume() {
-        mRewardedVideoAd.resume(this);
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        mRewardedVideoAd.pause(this);
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        mRewardedVideoAd.destroy(this);
-        super.onDestroy();
-    }
 
     public void sair(){
 
@@ -220,41 +180,4 @@ public class MenuActivity extends AppCompatActivity  implements RewardedVideoAdL
         }
     }
 
-    @Override
-    public void onRewarded(RewardItem reward) {
-//        Toast.makeText(this, "onRewarded! currency: " + reward.getType() + "  amount: " +
-//                reward.getAmount(), Toast.LENGTH_SHORT).show();
-        // Reward the user.
-    }
-
-    @Override
-    public void onRewardedVideoAdLeftApplication() {
-//        Toast.makeText(this, "onRewardedVideoAdLeftApplication",
-//                Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onRewardedVideoAdClosed() {
-//        Toast.makeText(this, "onRewardedVideoAdClosed", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onRewardedVideoAdFailedToLoad(int errorCode) {
-//        Toast.makeText(this, "onRewardedVideoAdFailedToLoad", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onRewardedVideoAdLoaded() {
-//        Toast.makeText(this, "onRewardedVideoAdLoaded", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onRewardedVideoAdOpened() {
-//        Toast.makeText(this, "onRewardedVideoAdOpened", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onRewardedVideoStarted() {
-//        Toast.makeText(this, "onRewardedVideoStarted", Toast.LENGTH_SHORT).show();
-    }
 }
