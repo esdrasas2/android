@@ -7,8 +7,8 @@ android {
         applicationId "com.crisnello.notereader"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 38
-        versionName "1.4"
+        versionCode 39
+        versionName "1.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

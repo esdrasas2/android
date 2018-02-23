@@ -212,10 +212,10 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
                 //Log.i("FACEBOOK", Profile.getCurrentProfile().toString());
 
                 String respFacebookJson = response.getJSONObject().toString();
-                //Log.i("Login FaceBook Usuario", respFacebookJson);
+                Log.i("Login FaceBook Usuario", respFacebookJson);
 
                 userFacebook = new Gson().fromJson(respFacebookJson, UsuarioFacebook.class);
-                //Log.i("UsuarioFacebook",userFacebook.toString());
+                Log.i("UsuarioFacebook",userFacebook.toString());
 
                 if(!ConexaoInternet.verificaConexao(getApplicationContext())){
                     (new Util(AutoLoginActivity.this)).showAlert("Você não está conectado na internet, efetue a conexão e tente novamente!");
@@ -231,7 +231,7 @@ public class AutoLoginActivity extends AppCompatActivity{ // implements LoaderCa
                                 hash.put("user_nome", userFacebook.getName());
                                 hash.put("user_email", userFacebook.getEmail());
                                 String respJson = Internet.postHttp(Config.WS_URL_ADD_USER, hash);
-                                //Log.i("Login ADD Usuario ", respJson);
+                                Log.i("Login ADD Usuario ", respJson);
                                 user = new Gson().fromJson(respJson, Usuario.class);
 
                                     runOnUiThread(new Runnable() {
