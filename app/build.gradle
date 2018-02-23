@@ -43,6 +43,6 @@ dependencies {
     compile 'com.journeyapps:zxing-android-embedded:3.5.0'
     testCompile 'junit:junit:4.12'
     compile files('libs/android-smart-image-view-1.0.0.jar')
-    compile 'com.google.android.gms:play-services-ads:11.8.0'
+    //compile 'com.google.android.gms:play-services-ads:11.8.0'
 }
 
