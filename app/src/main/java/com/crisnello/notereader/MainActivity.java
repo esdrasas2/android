@@ -36,7 +36,7 @@ import com.crisnello.notereader.util.ConexaoInternet;
 import com.crisnello.notereader.util.Internet;
 import com.crisnello.notereader.util.PreferencesUtil;
 import com.crisnello.notereader.util.Util;
-import com.google.android.gms.ads.MobileAds;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -92,8 +92,6 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        MobileAds.initialize(this, Config.ADMOB_APP_ID);
 
         mProgress = findViewById(R.id.progress);
 
