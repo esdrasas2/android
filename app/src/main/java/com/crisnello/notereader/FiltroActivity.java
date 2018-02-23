@@ -14,17 +14,14 @@ import android.widget.TextView;
 
 import com.crisnello.notereader.config.Config;
 import com.crisnello.notereader.entitie.Usuario;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 
-import com.google.android.gms.ads.AdRequest;
 
 import java.util.Calendar;
 
 
 public class FiltroActivity extends AppCompatActivity {
 
-    private AdView mAdView;
+
 
     private TextView txt_msg_data;
     private EditText edt_valor, edt_data;
@@ -67,9 +64,8 @@ public class FiltroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filtro);
 
-        MobileAds.initialize(this, Config.ADMOB_APP_ID);
-
-        mAdView = (AdView) findViewById(R.id.adView);
+//        MobileAds.initialize(this, Config.ADMOB_APP_ID);
+//        mAdView = (AdView) findViewById(R.id.adView);
 
         // Create an ad request. Check your logcat output for the hashed device ID to
         // get test ads on a physical device. e.g.
@@ -81,10 +77,10 @@ public class FiltroActivity extends AppCompatActivity {
 //                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
 //                .build();
 
-        AdRequest adRequest = new AdRequest.Builder().build();
-
-        // Start loading the ad in the background.
-        mAdView.loadAd(adRequest);
+//        AdRequest adRequest = new AdRequest.Builder().build();
+//
+//        // Start loading the ad in the background.
+//        mAdView.loadAd(adRequest);
 
         Calendar cal = Calendar.getInstance();
         year = cal.get(Calendar.YEAR);
