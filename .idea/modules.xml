@@ -3,9 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\crisn\AndroidStudioProjects\notereader\app\app.iml" filepath="C:\Users\crisn\AndroidStudioProjects\notereader\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/notereader.iml" filepath="$PROJECT_DIR$/notereader.iml" />
-      <module fileurl="file://C:\Users\crisn\AndroidStudioProjects\notereader\notereader.iml" filepath="C:\Users\crisn\AndroidStudioProjects\notereader\notereader.iml" />
     </modules>
   </component>
 </project>
